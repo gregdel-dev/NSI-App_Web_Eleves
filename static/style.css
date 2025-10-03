@@ -1,0 +1,101 @@
+/* --- Style global --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background-color: #f9fafb;
+    color: #111827;
+}
+
+h1, h2 {
+    color: #2563eb; /* bleu moderne */
+    margin-bottom: 20px;
+}
+
+/* --- Liens --- */
+a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: bold;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Table --- */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 15px;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+th, td {
+    border: 1px solid #e5e7eb;
+    padding: 12px 15px;
+    text-align: left;
+}
+th {
+    background-color: #f3f4f6;
+    font-weight: bold;
+    color: #374151;
+}
+tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* --- Formulaire --- */
+form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    align-items: end;
+}
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #374151;
+}
+input[type="text"], input[type="number"] {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+input:focus {
+    border-color: #2563eb;
+}
+
+/* --- Bouton --- */
+button {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #1e40af;
+}
+.add-button{
+    display: inline-block;   /* pour que le cadre suive le texte */
+    padding: 6px 10px;       /* espace interne */
+    border: 2px solid #2563eb; /* cadre bleu */
+    border-radius: 6px;      /* coins arrondis */
+    text-decoration: none;   /* pas de soulignement */
+    color: #2563eb;
+    font-weight: bold;
+    
+}
+
+.add-button:hover {
+    background-color: #2563eb;
+    color: white;            /* inversion au survol */
+}

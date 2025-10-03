@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un élève</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <h1>Ajouter un élève</h1>
+    <form method="post">
+        <label>Prénom : <input type="text" name="prenom"></label><br>
+        <label>Nom : <input type="text" name="nom"></label><br>
+        <label>Âge : <input type="number" name="age"></label><br>
+        <button type="submit">Enregistrer</button>
+    </form>
+</body>
+</html>
