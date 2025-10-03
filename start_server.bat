@@ -1,4 +1,4 @@
-#!/bin/bash
+@echo off
 
 while true; do
     echo "Lancement de app.py..."
