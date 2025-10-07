@@ -7,22 +7,29 @@
     <title>Elèves Directe - Modifer</title>
 </head>
 <body>
-    <h1>Modiferx des élèves</h1>
+    <a class="back_button" href="/">Retour à l'acceuil</a>
+    <div class="content-form">
+    <div> 
+
+       
+    <h1>Modifer des élèves</h1>
     <form method="POST">
-        <input type="number" name="id" value="{{e[0]}}">
+        <input type="hidden" name="id" value="{{eleve[0]}}">
         <div class="form-element">
-            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text"></label>
+            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text" value="{{eleve[1]}}"></label>
             
         </div>
         <div class="form-element">
-            <label for="nom">Nom : <input id="nom" name="nom" type="text"></label>
+            <label for="nom">Nom : <input id="nom" name="nom" type="text" value="{{eleve[2]}}"></label>
             
         </div>
         <div class="form-element">
-            <label for="age">Age : <input id="age" name="age" type="number"></label>
+            <label for="age">Age : <input id="age" name="age" type="number"value="{{eleve[3]}}"></label>
             
         </div>
         <button class="submit_button" type="submit">Enregistrer</button>
     </form>
+     </div>
+    </div>
 </body>
 </html>

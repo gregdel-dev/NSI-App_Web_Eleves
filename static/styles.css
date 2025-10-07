@@ -11,6 +11,7 @@ body{
     padding: 6px 10px;
     text-decoration: none;
     font-weight: bold;
+    color: #2563eb;
 }
 table{
     width : 100%;
@@ -81,13 +82,21 @@ label{
     font-weight: bold;
 }
 .content-form{
-    width: 400px;
     
     margin: auto auto;
     display: flex;
-    justify-content: center; /* centre horizontalement */
-    align-items: center;     /* centre verticalement */
-    height: 100vh; 
-    margin: 0 auto;
+    justify-content: center; 
+    align-items: center;     
     
+    
+}
+
+.back_button{
+    display: inline-block;
+    border: 2px solid #2563eb;
+    border-radius: 6px; 
+    padding: 6px 10px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #2563eb;
 }
