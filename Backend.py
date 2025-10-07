@@ -6,7 +6,7 @@ base_temporaire = [(1,"prenom1","nom1", 17)]
 @app.route('/')
 def home():
     return render_template('index.html', eleves=base_temporaire)
-@app.route('/update')
+@app.route('/update', methods=["POST","GET"])
 def update():
     id = request.args.get('id')
     if id is None:
@@ -19,6 +19,16 @@ def update():
             break
     if current is None:
         return "Élève non trouvé", 404
+    if request.method=="POST":
+        plusgrand=base_temporaire[0][0]
+        for i in base_temporaire:
+            if i[0]>plusgrand:
+                plusgrand=i[0]
+        id=plusgrand+1
+        prenom=request.form["prenom"]
+        nom=request.form["nom"]
+        age=request.form["age"]
+        base_temporaire.append((id,prenom,nom,age))
     return render_template('update.html', eleve=current)
 
 @app.route('/ajout', methods=["POST","GET"])
