@@ -46,6 +46,12 @@ form{
     align-items: end;
     
 }
+.form-element {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
 input{
     color: #000000;
     padding: 5px;
@@ -61,4 +67,16 @@ input:focus {
 
 label{
     color: #374151;
+}
+.button_case{
+    padding: 1px;
+}
+.button_case button{
+    background-color: #2563eb;
+    color : white;
+    border: none;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
 }

@@ -9,14 +9,19 @@
 <body>
     <h1>Ajouter des élèves</h1>
     <form method="POST">
-        <ul>
+        
+        <div class="form-element">
+            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text"></label>
             
-                <label for="prenom">Prénom : <input type="text" id="prenom" name="prenom_eleve"></label><br>
+        </div>
+        <div class="form-element">
+            <label for="nom">Nom : <input id="nom" name="nom" type="text"></label>
             
-                <label for="nom">Nom : <input type="text" id="nom" name="nom_eleve"></label><br>
+        </div>
+        <div class="form-element">
+            <label for="age">Age : <input id="age" name="age" type="number"></label>
             
-                <label for="age">Age : <input type="number" id="age" name="age_eleve"></label><br> 
-        </ul>
+        </div>
         <button class="submit_button" type="submit">Enregistrer</button>
     </form>
 </body>

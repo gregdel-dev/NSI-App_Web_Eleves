@@ -17,11 +17,14 @@
             <th>Nom</th>
             <th>Age</th>
         </tr>
+        {% for e in eleves %}
         <tr>
-            <td>Grégoire</td>
-            <td>Pradel de Lamaze</td>
-            <td>17 ans</td>
+            <td>{{ e[1] }}</td>
+            <td>{{ e[2] }}</td>
+            <td>{{ e[3] }}</td>
+            <td class="button_case"><a href="/update?id={{ e[0] }}">Modifier</a></td>
         </tr>
+        {% endfor %}
     </table>
 </body>
 </html>
