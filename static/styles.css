@@ -2,11 +2,33 @@ body{
     font-family: Arial, sans-serif;
     
     background-color: #f9fafb;
-    color: #111827;
-}
-h1{
     color: #2563eb;
 }
-p{
-    color: rgb(219, 248, 138);
+.button {
+    display: inline-block;
+    border: 2px solid #2563eb;
+    border-radius: 6px; 
+    padding: 6px 10px;
+    text-decoration: none;
+    font-weight: bold;
 }
+table{
+    width : 100%;
+    margin-top: 20px ;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    
+}
+th, td{
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: left;
+    color: #374151;
+    padding: 12px 15px;
+    
+}
+
