@@ -8,7 +8,19 @@ def home():
     return render_template('index.html', eleves=base_temporaire)
 @app.route('/update')
 def update():
-    return render_template('update.html')
+    id = request.args.get('id')
+    if id is None:
+        return "Aucun ID fourni", 400
+    id = int(id)
+    current = None
+    for i in base_temporaire:
+        if i[0] == id:
+            current = i
+            break
+    if current is None:
+        return "Élève non trouvé", 404
+    return render_template('update.html', eleve=current)
+
 @app.route('/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
