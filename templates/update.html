@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css">
+    <title>Elèves Directe - Modifer</title>
+</head>
+<body>
+    <h1>Modiferx des élèves</h1>
+    <form method="POST">
+        <input type="number" name="id" value="{{e[0]}}">
+        <div class="form-element">
+            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text"></label>
+            
+        </div>
+        <div class="form-element">
+            <label for="nom">Nom : <input id="nom" name="nom" type="text"></label>
+            
+        </div>
+        <div class="form-element">
+            <label for="age">Age : <input id="age" name="age" type="number"></label>
+            
+        </div>
+        <button class="submit_button" type="submit">Enregistrer</button>
+    </form>
+</body>
+</html>
