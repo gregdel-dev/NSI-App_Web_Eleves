@@ -29,6 +29,8 @@ th, td{
     padding: 12px 15px;
     
 }
+
+
 .submit_button{
     background-color: #2563eb;
     color : white;
@@ -39,7 +41,7 @@ th, td{
     font-weight: bold;
 
 }
-form{
+.content-form form{
     margin-top: 20px;
     display: flex;
     flex-direction: column;
@@ -71,6 +73,11 @@ label{
 }
 .button_case{
     padding: 1px;
+    gap: 10px;
+    align-items: center;
+    width:min-content;
+    
+    
 }
 .button_case button{
     background-color: #2563eb;
@@ -79,7 +86,17 @@ label{
     padding: 5px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    
+}
+.button_case a{
+    background-color: #2563eb;
+    color : white;
+    border: none;
+    padding: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    
+    text-decoration: none;
 }
 .content-form{
     
@@ -99,4 +116,13 @@ label{
     text-decoration: none;
     font-weight: bold;
     color: #2563eb;
+}
+
+
+.actions-buttons-form{
+    padding: 1px;
+    gap: 10px;
+    align-items: center;
+    margin-left: 10px;
+    
 }

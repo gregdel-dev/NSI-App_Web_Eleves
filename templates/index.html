@@ -22,7 +22,13 @@
             <td>{{ e[1] }}</td>
             <td>{{ e[2] }}</td>
             <td>{{ e[3] }}</td>
-            <td class="button_case"><a href="/update?id={{ e[0] }}">Modifier</a></td>
+            <td class="button_case">
+                
+                <form action="/supprimer?id={{ e[0] }}" class="actions-buttons-form"> 
+                    <a href="/update?id={{ e[0] }}">✏️ Modifier</a> 
+                    <button type="submit">🗑️ Supprimer</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
