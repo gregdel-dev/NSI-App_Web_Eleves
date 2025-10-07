@@ -80,3 +80,14 @@ label{
     cursor: pointer;
     font-weight: bold;
 }
+.content-form{
+    width: 400px;
+    
+    margin: auto auto;
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement */
+    height: 100vh; 
+    margin: 0 auto;
+    
+}
