@@ -12,7 +12,7 @@ def ajout():
         plusgrand=base_temporaire[0][0]
         for i in base_temporaire:
             if i[0]>plusgrand:
-                plusgrand=i
+                plusgrand=i[0]
         id=plusgrand+1
         prenom=request.form["prenom"]
         nom=request.form["nom"]
