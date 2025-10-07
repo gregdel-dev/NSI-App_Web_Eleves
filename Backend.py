@@ -6,6 +6,9 @@ base_temporaire = [(1,"prenom1","nom1", 17)]
 @app.route('/')
 def home():
     return render_template('index.html', eleves=base_temporaire)
+@app.route('/update')
+def update():
+    return render_template('update.html')
 @app.route('/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
