@@ -9,6 +9,11 @@ def home():
 @app.route('/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
+        plusgrand=base_temporaire[0][0]
+        for i in base_temporaire:
+            if i[0]>plusgrand:
+                plusgrand=i
+        id=plusgrand+1
         prenom=request.form["prenom"]
         nom=request.form["nom"]
         age=request.form["age"]
