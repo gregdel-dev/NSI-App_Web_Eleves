@@ -1,7 +1,7 @@
 from flask import Flask,render_template, send_from_directory, request
 from os import path
 app=Flask(__name__)
-#Adam: C'est la base temporaire, t'y touche pas. Et au passage dépèche toi gros tahan
+#Adam: C'est la base temporaire, t'y touche pas. Et au passage dépèche toi
 base_temporaire = [(1,"prenom1","nom1", 17)]
 @app.route('/')
 def home():
