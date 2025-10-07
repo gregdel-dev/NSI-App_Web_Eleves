@@ -17,7 +17,7 @@ def ajout():
         prenom=request.form["prenom"]
         nom=request.form["nom"]
         age=request.form["age"]
-        base_temporaire.append((prenom,nom,age))
+        base_temporaire.append((id,prenom,nom,age))
         print(base_temporaire)
     return render_template('ajout.html')
 
