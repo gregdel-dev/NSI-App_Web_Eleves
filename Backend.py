@@ -5,7 +5,7 @@ app=Flask(__name__)
 base_temporaire = []
 @app.route('/')
 def home():
-    return render_template('index.html',base_temporaire)
+    return render_template('index.html',base_temporaire=base_temporaire)
 @app.route('/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
