@@ -25,6 +25,7 @@
 
    <h1>Bienvenue sur Elèves Directe</h1>
     <table>
+        <p id="compteur">Nombres d'élèves affichés : {{ compteur }}</p>
         <tr>
             <th>Prénom</th>
             <th>Nom</th>
@@ -48,4 +49,11 @@
         {% endfor %}
     </table>
 </body>
+<script>
+
+
+if (compteur === null) {
+  document.getElementById("compteur").style.display = "none";
+}
+</script>
 </html>
