@@ -34,24 +34,26 @@ def lire_eleves():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("SELECT * FROM eleves")
+    eleves = c.fetchall()
     conn.commit()
     conn.close()
-    eleves = c.fetchall()
+    
     return eleves
 
 def lire_eleve(id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT * FROM eleves WHERE id = ?", (id))
+    c.execute("SELECT * FROM eleves WHERE id = ?", (str(id)))
+    eleve = c.fetchone()
     conn.commit()
     conn.close()
-    eleve = c.fetchone()
+    
     return eleve
 
 def supprimer_eleve(id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("DELETE FROM eleves WHERE id = ?", (id))
+    c.execute("DELETE FROM eleves WHERE id = ?", (str(id)))
     conn.commit()
     conn.close()
     return True
@@ -96,7 +98,25 @@ def lire_eleve_filtre_age(debut, fin):
     conn.close()
     return eleves
 
-
+#série de tests
+import time
+supprimer_eleve(1)
+time.sleep(2)
+supprimer_eleve(2)
+time.sleep(2)
+creer_eleve(1,"prenom1","nom1",11)
+creer_eleve(2,"prenom2","nom2",12)
+time.sleep(2)
+print(lire_eleves())
+print(lire_eleve(1))
+time.sleep(2)
+update(1,"prenome1","nome1",122)
+time.sleep(2)
+print(lire_eleves())
+time.sleep(2)
+print(recherche_nom("nome"))
+print(lire_eleve_tri("nom"))
+print(lire_eleve_filtre_age(10,12))
 
 
 
