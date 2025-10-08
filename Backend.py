@@ -19,7 +19,8 @@ def update(id, prenom, nom ,age):
     #si possible tu modifie les données de l'élève (selon son id) sinnon juste tu le supprime et tu le recréé
     return
 
-
+def recherche_nom(chaine):
+    return #renvoie les élèves dont le nom ou prenom correspnd ou contient la chaine de caractères
 
 
 
