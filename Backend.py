@@ -22,6 +22,10 @@ def update(id, prenom, nom ,age):
 def recherche_nom(chaine):
     return #renvoie les élèves dont le nom ou prenom correspnd ou contient la chaine de caractères
 
+def lire_eleve_tri(argument): #argument contient soit "prenom" soit "nom" soit "age"
+    return #renvoie les élèves triés selon l'arguement (trié par age, par prenom etc...)
+def lire_eleve_filtre_age(debut, fin):
+    return #renvoie les élèves selon l'intervale (entre début et fin)
 
 
 

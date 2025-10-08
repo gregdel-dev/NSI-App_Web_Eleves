@@ -2,11 +2,14 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="30">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
+    <link rel="topbar" href="topbar.html">
     <title>Elèves Directe - Accueil</title>
 </head>
 <body>
+    <topbar />
     <h1>Bienvenue sur Elèves Directe</h1>
     <form>
         <input type="text" name="recherche" placeholder="Rechercher un élève">
@@ -28,7 +31,7 @@
             <td>{{ e[3] }}</td>
             <td class="button_case">
                 
-                <form action="/" class="actions-buttons-form"> 
+                <form action="/" class="actions-buttons-form" method="POST"> 
                     <a href="/update?id={{ e[0] }}">✏️ Modifier</a> 
                     <input type="hidden" name="id">
                     <input type="hidden" name="type" value="supprimer">
