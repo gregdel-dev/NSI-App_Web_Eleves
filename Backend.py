@@ -1,31 +1,101 @@
+import sqlite3
 from flask import Flask,render_template, send_from_directory, request
 from os import path
 app=Flask(__name__)
 
-#Adam tu devra remplir ces fonctions 
-def creer_eleve(id,prenom,nom,age):
-    return
+DB_NAME = 'eleves.sqlite'
+conn = sqlite3.connect(DB_NAME)
+c = conn.cursor()
+c.execute("""
+        CREATE TABLE IF NOT EXISTS eleves (
+            id INTEGER PRIMARY KEY,
+            prenom TEXT NOT NULL,
+            nom TEXT NOT NULL,
+            age INTEGER NOT NULL
+        )""")
+conn.commit()
+conn.close()
+
+def creer_eleve(id, prenom, nom, age):
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    
+
+    try:
+        c.execute("INSERT INTO eleves (id, prenom, nom, age) VALUES (?, ?, ?, ?)", (id, prenom, nom, age))
+    except sqlite3.IntegrityError:
+        conn.close()
+        return False
+    conn.commit()
+    conn.close()
+    return True
 
 def lire_eleves():
-    return #renvoie les élèves
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT * FROM eleves")
+    conn.commit()
+    conn.close()
+    eleves = c.fetchall()
+    return eleves
 
 def lire_eleve(id):
-    return #renvoie un tuple avec les données de l'élève demandé (par son id)
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT * FROM eleves WHERE id = ?", (id))
+    conn.commit()
+    conn.close()
+    eleve = c.fetchone()
+    return eleve
 
 def supprimer_eleve(id):
-    return 
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("DELETE FROM eleves WHERE id = ?", (id))
+    conn.commit()
+    conn.close()
+    return True
 
-def update(id, prenom, nom ,age):
-    #si possible tu modifie les données de l'élève (selon son id) sinnon juste tu le supprime et tu le recréé
-    return
+def update(id, prenom, nom, age):
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("UPDATE eleves SET prenom = ?, nom = ?, age = ? WHERE id = ?", (prenom, nom, age, id))
+    if c.rowcount == 0:
+        c.execute("INSERT INTO eleves (id, prenom, nom, age) VALUES (?, ?, ?, ?)", (id, prenom, nom, age))
+    conn.commit()
+    conn.close()
+    return True
 
 def recherche_nom(chaine):
-    return #renvoie les élèves dont le nom ou prenom correspnd ou contient la chaine de caractères
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT * FROM eleves WHERE prenom LIKE ? OR nom LIKE ?", (f"%{chaine}%", f"%{chaine}%"))
+    resultats = c.fetchall()
+    conn.commit()
+    conn.close()
+    return resultats
 
-def lire_eleve_tri(argument): #argument contient soit "prenom" soit "nom" soit "age"
-    return #renvoie les élèves triés selon l'arguement (trié par age, par prenom etc...)
+def lire_eleve_tri(argument):
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    if argument not in ["prenom", "nom", "age"]:
+        conn.close()
+        return []
+    c.execute(f"SELECT * FROM eleves ORDER BY {argument}")
+    eleves = c.fetchall()
+    conn.commit()
+    conn.close()
+    return eleves
+
 def lire_eleve_filtre_age(debut, fin):
-    return #renvoie les élèves selon l'intervale (entre début et fin)
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT * FROM eleves WHERE age BETWEEN ? AND ?", (debut, fin))
+    eleves = c.fetchall()
+    conn.commit()
+    conn.close()
+    return eleves
+
 
 
 
