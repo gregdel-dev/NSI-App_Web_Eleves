@@ -58,7 +58,7 @@ def supprimer_eleve(id):
     conn.close()
     return 
 
-def update(id, prenom, nom, age):
+def modifier(id, prenom, nom, age):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     c.execute("UPDATE eleves SET prenom = ?, nom = ?, age = ? WHERE id = ?", (prenom, nom, age, id))
