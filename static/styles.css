@@ -3,15 +3,16 @@ body{
     
     background-color: #f9fafb;
     color: #2563eb;
+    margin: 0;
 }
 .ajout_button {
     display: inline-block;
-    border: 2px solid #2563eb;
+    border: 2px solid white;
     border-radius: 6px; 
     padding: 6px 10px;
     text-decoration: none;
     font-weight: bold;
-    color: #2563eb;
+    color: white;
 }
 table{
     width : 100%;
@@ -125,4 +126,37 @@ label{
     align-items: center;
     margin-left: 10px;
     
+}
+.topbar{
+    background-color: #2563eb;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1px 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+.topbar button{
+    display: inline-block;
+    border: 2px solid white;
+    border-radius: 6px; 
+    padding: 6px 10px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    background-color: #2563eb;
+}
+.topbar form{
+    align-content: center;
+    margin-top: auto ;
+}
+.topbar img{
+    width: 30px;
+    height: 30px;
+    margin-right: 5px;
+    
+}
+.logo{
+    display: flex;
+    align-items: center;
 }

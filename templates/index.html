@@ -5,19 +5,25 @@
     <meta http-equiv="refresh" content="30">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
-    <link rel="topbar" href="topbar.html">
+    
     <title>Elèves Directe - Accueil</title>
 </head>
 <body>
-    <topbar />
-    <h1>Bienvenue sur Elèves Directe</h1>
-    <form>
-        <input type="text" name="recherche" placeholder="Rechercher un élève">
+    <div class="topbar">
+        <div class="logo">
+        <img src="../static/icon.png" alt="">
+        <h2>Elèves Directe</h2>
+        </div>
+        <form>
+        <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
         <button type="submit">Rechercher</button>
     </form>
     <nav>
         <a href="/ajout" class="ajout_button">Ajouter des élèves</a>
     </nav>
+    </div>
+
+   <h1>Bienvenue sur Elèves Directe</h1>
     <table>
         <tr>
             <th>Prénom</th>
