@@ -28,7 +28,7 @@ def creer_eleve(id, prenom, nom, age):
         return False
     conn.commit()
     conn.close()
-    return True
+    return 
 
 def lire_eleves():
     conn = sqlite3.connect(DB_NAME)
@@ -56,7 +56,7 @@ def supprimer_eleve(id):
     c.execute("DELETE FROM eleves WHERE id = ?", (str(id)))
     conn.commit()
     conn.close()
-    return True
+    return 
 
 def update(id, prenom, nom, age):
     conn = sqlite3.connect(DB_NAME)
@@ -66,7 +66,7 @@ def update(id, prenom, nom, age):
         c.execute("INSERT INTO eleves (id, prenom, nom, age) VALUES (?, ?, ?, ?)", (id, prenom, nom, age))
     conn.commit()
     conn.close()
-    return True
+    return 
 
 def recherche_nom(chaine):
     conn = sqlite3.connect(DB_NAME)
@@ -99,24 +99,26 @@ def lire_eleve_filtre_age(debut, fin):
     return eleves
 
 #série de tests
-import time
-supprimer_eleve(1)
-time.sleep(2)
-supprimer_eleve(2)
-time.sleep(2)
-creer_eleve(1,"prenom1","nom1",11)
-creer_eleve(2,"prenom2","nom2",12)
-time.sleep(2)
-print(lire_eleves())
-print(lire_eleve(1))
-time.sleep(2)
-update(1,"prenome1","nome1",122)
-time.sleep(2)
-print(lire_eleves())
-time.sleep(2)
-print(recherche_nom("nome"))
-print(lire_eleve_tri("nom"))
-print(lire_eleve_filtre_age(10,12))
+###
+    import time
+    supprimer_eleve(1)
+    time.sleep(2)
+    supprimer_eleve(2)
+    time.sleep(2)
+    creer_eleve(1,"prenom1","nom1",11)
+    creer_eleve(2,"prenom2","nom2",12)
+    time.sleep(2)
+    print(lire_eleves())
+    print(lire_eleve(1))
+    time.sleep(2)
+    update(1,"prenome1","nome1",122)
+    time.sleep(2)
+    print(lire_eleves())
+    time.sleep(2)
+    print(recherche_nom("nome"))
+    print(lire_eleve_tri("nom"))
+    print(lire_eleve_filtre_age(10,12))
+###
 
 
 
@@ -174,4 +176,4 @@ def favicon():
     )
 
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run()
