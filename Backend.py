@@ -122,11 +122,10 @@ def lire_eleve_filtre_age(debut, fin):
 
 
 
-#Adam: C'est la base temporaire, t'y touche pas. Et au passage dépèche toi
-base_temporaire = [(1,"prenom1","nom1", 17)]
+
 @app.route('/')
 def home():
-    return render_template('index.html', eleves=base_temporaire)
+    return render_template('index.html', lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
     id = request.args.get('id')
