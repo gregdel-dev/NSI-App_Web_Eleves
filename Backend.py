@@ -8,7 +8,7 @@ conn = sqlite3.connect(DB_NAME)
 c = conn.cursor()
 c.execute("""
         CREATE TABLE IF NOT EXISTS eleves (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             prenom TEXT NOT NULL,
             nom TEXT NOT NULL,
             age INTEGER NOT NULL
@@ -16,13 +16,13 @@ c.execute("""
 conn.commit()
 conn.close()
 
-def creer_eleve(id, prenom, nom, age):
+def creer_eleve(prenom, nom, age):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
 
     try:
-        c.execute("INSERT INTO eleves (id, prenom, nom, age) VALUES (?, ?, ?, ?)", (id, prenom, nom, age))
+        c.execute("INSERT INTO eleves (prenom, nom, age) VALUES (?, ?, ?)", (prenom, nom, age))
     except sqlite3.IntegrityError:
         conn.close()
         return False
@@ -125,7 +125,7 @@ def lire_eleve_filtre_age(debut, fin):
 
 @app.route('/')
 def home():
-    return render_template('index.html', lire_eleves())
+    return render_template('index.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
     id = request.args.get('id')
@@ -133,7 +133,7 @@ def update():
         return "Aucun ID fourni", 400
     id = int(id)
     current = None
-    for i in base_temporaire:
+    for i in lire_eleve():
         if i[0] == id:
             current = i
             break
@@ -154,16 +154,10 @@ def update():
 @app.route('/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
-        plusgrand=base_temporaire[0][0]
-        for i in base_temporaire:
-            if i[0]>plusgrand:
-                plusgrand=i[0]
-        id=plusgrand+1
         prenom=request.form["prenom"]
         nom=request.form["nom"]
         age=request.form["age"]
-        base_temporaire.append((id,prenom,nom,age))
-        print(base_temporaire)
+        creer_eleve(prenom,nom,age)
     return render_template('ajout.html')
 
 @app.route('/favicon.ico')
