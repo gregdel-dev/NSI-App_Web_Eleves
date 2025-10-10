@@ -13,10 +13,11 @@ body{
     text-decoration: none;
     font-weight: bold;
     color: white;
+    cursor: pointer;
 }
 table{
     width : 100%;
-    margin-top: 20px ;
+    
     box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     border-collapse: collapse;
     border-radius: 8px;
@@ -40,6 +41,7 @@ th, td{
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
+    cursor: pointer;
 
 }
 .content-form form{
@@ -56,14 +58,18 @@ th, td{
     align-items: center;
     width: 100%;
 }
+.form-element input{
+    margin-bottom: 20px;
+}
 input{
     color: #000000;
     padding: 5px;
     border : 1px solid #d1d5db;
-    margin-bottom: 20px;
+    
     outline: none; 
     transition: border-color 0.2s;
     border-radius: 6px;
+    cursor: text;
 }
 input:focus {
     border-color: #2563eb ;
@@ -117,6 +123,7 @@ label{
     text-decoration: none;
     font-weight: bold;
     color: #2563eb;
+    cursor: pointer;
 }
 
 
@@ -125,6 +132,7 @@ label{
     gap: 10px;
     align-items: center;
     margin-left: 10px;
+    
     
 }
 .topbar{
@@ -145,10 +153,11 @@ label{
     font-weight: bold;
     color: white;
     background-color: #2563eb;
+    cursor: pointer;
 }
 .topbar form{
     align-content: center;
-    margin-top: auto ;
+    
 }
 .topbar img{
     width: 30px;
@@ -159,4 +168,89 @@ label{
 .logo{
     display: flex;
     align-items: center;
+}
+.button-bleu{
+    background-color: #2563eb;
+    color : white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+.dropdown-button{
+    display: inline-block;
+    border: 1px solid #2563eb;
+    border-radius: 6px; 
+    padding: 3px 5px;
+    color: #2563eb;
+    background-color: white;
+    margin-right: 5px;
+    cursor: pointer;
+    width: 188px;
+    
+}
+
+.dropdown{
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  min-width: 160px;
+  z-index: 1;
+}
+.dropdown-content div {
+  color: #2563eb;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.dropdown-content div:hover {
+  background: #2563eb;
+  color: #111;
+}
+
+.dropdown.show .dropdown-content {
+  display: block;
+}
+.compteur{
+    color: #111;
+    font-size: small;
+}
+.export_boutton{
+    background-color: #2563eb;
+    color : white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;  
+    margin-left: auto;
+  
+}
+.haut_tableau{
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+.filtre{
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+.filtre button{
+    padding: 4px;
+}
+.filtre input{
+    width: 70px;
 }

@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="30">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
     
@@ -16,6 +15,7 @@
         </div>
         <form>
         <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
+        <input type="hidden" name="type" value="supprimer">
         <button type="submit">Rechercher</button>
     </form>
     <nav>
@@ -24,8 +24,36 @@
     </div>
 
    <h1>Bienvenue sur Elèves Directe</h1>
+   
+        
+        
+        <div class="haut_tableau">
+            <p id="compteur" class="compteur">Nombres d'élèves affichés : {{ compteur }}</p>
+            
+            <div class="dropdown" id="dropdown">
+                <label for="dropdown">Trier par : </label>
+                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;</div>
+                <div class="dropdown-content">
+                    <div onclick="selectOption('prenom')">Prénom</div>
+                    <div onclick="selectOption('nom')">Nom</div>
+                    <div onclick="selectOption('age')">Age</div>
+                </div>
+            </div>
+            <div class="filtre">
+                <form method="POST">
+                    <input type="hidden" name="type" value="filtre">
+                    <label for="debut">Filtrer par age de </label>
+                    <input type="number" name="debut">
+                    <label for="fin"> à </label>
+                    <input type="number" name="fin">
+                    <label> ans</label>
+                    <button type="submit" class="button-bleu">Appliquer</button>
+                </form>
+            </div>
+            <a href="/export" class="export_boutton">Exporter</a>
+        </div>
     <table>
-        <p id="compteur">Nombres d'élèves affichés : {{ compteur }}</p>
+                       
         <tr>
             <th>Prénom</th>
             <th>Nom</th>
@@ -54,6 +82,25 @@
 
 if (compteur === null) {
   document.getElementById("compteur").style.display = "none";
+}
+function toggleMenu() {
+  document.getElementById("dropdown").classList.toggle("show");
+}
+
+async function selectOption(value) {
+  const res = await fetch('/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'   
+      },
+      body: JSON.stringify({ tri: value, type: "tri" }),
+      credentials: 'same-origin' 
+    });
+    if (value === "prenom") document.querySelector(".dropdown-button").textContent = "Prénom ▿";
+    if (value === "nom") document.querySelector(".dropdown-button").textContent = "Nom ▿";
+    if (value === "age") document.querySelector(".dropdown-button").textContent = "Age ▿";
+    
+    toggleMenu()
 }
 </script>
 </html>
