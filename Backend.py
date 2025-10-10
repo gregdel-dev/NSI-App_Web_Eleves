@@ -126,8 +126,10 @@ def lire_eleve_filtre_age(debut, fin):
 @app.route('/', methods=["POST","GET"])
 def home():
     if request.method=="POST":
-        if request.form["supprimer"]:
-            a=1
+        if "supprimer" in request.form:
+            id=request.form.get('id')
+            supprimer_eleve(id)
+            return render_template('index.html', eleves=lire_eleves())
     return render_template('index.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
