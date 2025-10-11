@@ -28,15 +28,20 @@
         
         
         <div class="haut_tableau">
-            <p id="compteur" class="compteur">Nombres d'élèves affichés : {{ compteur }}</p>
+            <p id="compteur_text" class="compteur">Nombres d'élèves affichés : <span id="compteur"></span></p>
             
             <div class="dropdown" id="dropdown">
                 <label for="dropdown">Trier par : </label>
-                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;</div>
+                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;
+                <form method="POST">
+                    <input type="hidden" name="type" value="tri">
                 <div class="dropdown-content">
-                    <div onclick="selectOption('prenom')">Prénom</div>
-                    <div onclick="selectOption('nom')">Nom</div>
-                    <div onclick="selectOption('age')">Age</div>
+                    <button type="submit" name="tri" value="prenom" onclick="selectOption('prenom')">Prénom</button>
+                    <button type="submit" name="tri" value="nom" onclick="selectOption('nom')">Nom</button>
+                    <button type="submit" name="tri" value="age" onclick="selectOption('age')">Age</button>
+                    
+                </div>
+                </form>
                 </div>
             </div>
             <div class="filtre">
@@ -78,24 +83,17 @@
     </table>
 </body>
 <script>
+const eleves_ = {{ eleves|tojson }};
+document.getElementById("compteur").textContent = eleves_.length;
 
 
-if (compteur === null) {
-  document.getElementById("compteur").style.display = "none";
-}
+
 function toggleMenu() {
   document.getElementById("dropdown").classList.toggle("show");
 }
 
-async function selectOption(value) {
-  const res = await fetch('/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'   
-      },
-      body: JSON.stringify({ tri: value, type: "tri" }),
-      credentials: 'same-origin' 
-    });
+async function selectOption(value) {  
+    document.getElementById("tri").value=value
     if (value === "prenom") document.querySelector(".dropdown-button").textContent = "Prénom ▿";
     if (value === "nom") document.querySelector(".dropdown-button").textContent = "Nom ▿";
     if (value === "age") document.querySelector(".dropdown-button").textContent = "Age ▿";

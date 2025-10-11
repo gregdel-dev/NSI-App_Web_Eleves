@@ -124,12 +124,10 @@ def lire_eleve_filtre_age(debut, fin):
 
 @app.route('/', methods=["POST","GET"])
 def home():
-    if request.method=="POST" and request.is_json:
-        data=request.get_json()
-        if data.get("type")=="tri":
-            critere=data.get("tri", "prenom")
-            return render_template('index.html', eleves=lire_eleve_tri(critere))
     if request.method=="POST":
+        if request.form.get("type")=="tri":
+            critere=request.form.get("tri")
+            return render_template('index.html', eleves=lire_eleve_tri(critere))
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             supprimer_eleve(id)
