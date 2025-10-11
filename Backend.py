@@ -2,7 +2,6 @@ import sqlite3
 from flask import Flask,render_template, send_from_directory, request
 from os import path
 app=Flask(__name__)
-
 DB_NAME = 'eleves.sqlite'
 conn = sqlite3.connect(DB_NAME)
 c = conn.cursor()
@@ -126,10 +125,11 @@ def lire_eleve_filtre_age(debut, fin):
 @app.route('/', methods=["POST","GET"])
 def home():
     if request.method=="POST":
-        if request.form["type"]=="supprimer":
+        if request.form.get("type")=="supprimer":
             id=request.form["id"]
             supprimer_eleve(id)
-            return render_template('index.html', eleves=lire_eleves())
+        elif request.form.get("type")=="number":
+            return render_template('index.html', eleves=lire_eleve_tri('age'))
     return render_template('index.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
