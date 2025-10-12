@@ -125,6 +125,10 @@ def home():
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             supprimer_eleve(id)
+        if request.form.get("type")=="filtre":
+            debut=request.form["debut"]
+            fin=request.form["fin"]
+            return render_template('index.html', eleves=lire_eleve_filtre_age(debut, fin))
     return render_template('index.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
