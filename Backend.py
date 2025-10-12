@@ -18,8 +18,6 @@ conn.close()
 def creer_eleve(prenom, nom, age):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    
-
     try:
         c.execute("INSERT INTO eleves (prenom, nom, age) VALUES (?, ?, ?)", (prenom, nom, age))
     except sqlite3.IntegrityError:
@@ -36,7 +34,6 @@ def lire_eleves():
     eleves = c.fetchall()
     conn.commit()
     conn.close()
-    
     return eleves
 
 def lire_eleve(id):
@@ -46,7 +43,6 @@ def lire_eleve(id):
     eleve = c.fetchone()
     conn.commit()
     conn.close()
-    
     return eleve
 
 def supprimer_eleve(id):
@@ -118,8 +114,6 @@ def lire_eleve_filtre_age(debut, fin):
     print(lire_eleve_tri("nom"))
     print(lire_eleve_filtre_age(10,12))
 ###
-
-
 
 
 @app.route('/', methods=["POST","GET"])
