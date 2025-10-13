@@ -284,3 +284,19 @@ label{
     text-decoration: none;  
     margin-left: 10px ;
 }
+.home-page-bouttons{
+    margin: auto auto;
+    display: flex;
+    justify-content: center; 
+    align-items: center;  
+    flex-direction: column;
+    max-width: 300px;
+    align-items: center;
+}
+.home-page-bouttons a{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    align-items: end;
+}
