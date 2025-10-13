@@ -1,6 +1,8 @@
 import sqlite3
-from flask import Flask,render_template, send_from_directory, request
+from flask import Flask,render_template, send_from_directory, request, jsonify, Response
 from os import path
+import io
+import json
 app=Flask(__name__)
 DB_NAME = 'eleves.sqlite'
 conn = sqlite3.connect(DB_NAME)
@@ -129,6 +131,9 @@ def home():
             debut=request.form["debut"]
             fin=request.form["fin"]
             return render_template('index.html', eleves=lire_eleve_filtre_age(debut, fin))
+    if request.args.get("type")=="recherche":
+        chaine=request.args.get("recherche")
+        return render_template('index.html', eleves=recherche_nom(chaine))
     return render_template('index.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
@@ -158,6 +163,27 @@ def favicon():
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon'
     )
+@app.route('/export')
+def export_json():
+    data = []
+    eleves=lire_eleves()
+    for eleve in eleves:
+        data.append({
+            "id": eleve[0],
+            "prenom": eleve[1],
+            "nom": eleve[2],
+            "age": eleve[3]
+        })
+    json_data = json.dumps(data, indent=4, ensure_ascii=False)
+
+    # Préparer la réponse HTTP pour téléchargement
+    response = Response(
+        io.BytesIO(json_data.encode('utf-8')),
+        mimetype="application/json"
+    )
+    response.headers["Content-Disposition"] = "attachment; filename=eleves.json"
+    return response
+
 
 if __name__=="__main__":
     app.run()
