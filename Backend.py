@@ -3,8 +3,10 @@ from flask import Flask,render_template, send_from_directory, request, jsonify, 
 from os import path
 import io
 import json
+import os
 app=Flask(__name__)
-DB_NAME = 'eleves.sqlite'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "eleves.sqlite")
 conn = sqlite3.connect(DB_NAME)
 c = conn.cursor()
 c.execute("""
