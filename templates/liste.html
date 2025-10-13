@@ -23,8 +23,7 @@
     </nav>
     </div>
 
-   <h1>Bienvenue sur Elèves Directe</h1>
-   
+   <a class="back_button" href="/">Retour à l'acceuil</a>
         
         
         <div class="haut_tableau">
@@ -72,7 +71,7 @@
             <td>{{ e[3] }}</td>
             <td class="button_case">
                 
-                <form action="/liste" class="actions-buttons-form" method="POST"> 
+                <form class="actions-buttons-form" method="POST"> 
                     <a href="/update?id={{ e[0] }}">✏️ Modifier</a> 
                     <input type="hidden" name="id" value="{{ e[0] }}">
                     <input type="hidden" name="type" value="supprimer">

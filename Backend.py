@@ -1,12 +1,15 @@
 import sqlite3
-from flask import Flask,render_template, send_from_directory, request, jsonify, Response
+from flask import Flask,render_template, send_from_directory, request, Response, redirect
 from os import path
 import io
 import json
 import os
+
+
 app=Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "eleves.sqlite")
+
 conn = sqlite3.connect(DB_NAME)
 c = conn.cursor()
 c.execute("""
@@ -43,7 +46,7 @@ def lire_eleves():
 def lire_eleve(id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("SELECT * FROM eleves WHERE id = ?", (str(id)))
+    c.execute("SELECT * FROM eleves WHERE id = ?", (str(id),))
     eleve = c.fetchone()
     conn.commit()
     conn.close()
@@ -52,7 +55,7 @@ def lire_eleve(id):
 def supprimer_eleve(id):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    c.execute("DELETE FROM eleves WHERE id = ?", (str(id)))
+    c.execute("DELETE FROM eleves WHERE id = ?", (str(id),))
     conn.commit()
     conn.close()
     return 
@@ -118,6 +121,7 @@ def lire_eleve_filtre_age(debut, fin):
     print(lire_eleve_tri("nom"))
     print(lire_eleve_filtre_age(10,12))
 ###
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -150,6 +154,7 @@ def update():
         nom=request.form["nom"]
         age=request.form["age"]
         modifier(id,prenom,nom,age)
+        return redirect("/liste")
     return render_template('update.html', eleve=lire_eleve(id))
 
 @app.route('/ajout', methods=["POST","GET"])
