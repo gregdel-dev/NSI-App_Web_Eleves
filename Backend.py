@@ -116,25 +116,27 @@ def lire_eleve_filtre_age(debut, fin):
     print(lire_eleve_tri("nom"))
     print(lire_eleve_filtre_age(10,12))
 ###
-
-
-@app.route('/', methods=["POST","GET"])
+@app.route('/')
 def home():
+    return render_template('index.html')
+
+@app.route('/liste', methods=["POST","GET"])
+def liste():
     if request.method=="POST":
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
-            return render_template('index.html', eleves=lire_eleve_tri(critere))
+            return render_template('liste.html', eleves=lire_eleve_tri(critere))
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             supprimer_eleve(id)
         if request.form.get("type")=="filtre":
             debut=request.form["debut"]
             fin=request.form["fin"]
-            return render_template('index.html', eleves=lire_eleve_filtre_age(debut, fin))
+            return render_template('liste.html', eleves=lire_eleve_filtre_age(debut, fin))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('index.html', eleves=recherche_nom(chaine))
-    return render_template('index.html', eleves=lire_eleves())
+        return render_template('liste.html', eleves=recherche_nom(chaine))
+    return render_template('liste.html', eleves=lire_eleves())
 @app.route('/update', methods=["POST","GET"])
 def update():
     id = request.args.get('id')
