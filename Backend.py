@@ -120,6 +120,7 @@ def lire_eleve_filtre_age(debut, fin):
 def home():
     return render_template('index.html')
 
+
 @app.route('/liste', methods=["POST","GET"])
 def liste():
     if request.method=="POST":
