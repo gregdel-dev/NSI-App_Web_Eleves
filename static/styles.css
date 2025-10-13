@@ -272,3 +272,15 @@ label{
     
 
 }
+.annuler-button{
+    background-color: #2563eb;
+    color : white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;  
+    margin-left: 10px ;
+}
