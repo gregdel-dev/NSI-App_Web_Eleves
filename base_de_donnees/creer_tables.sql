@@ -1,0 +1,53 @@
+CREATE TABLE IF NOT EXISTS Professeur (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nom TEXT NOT NULL,
+    Prenom TEXT NOT NULL
+    );
+CREATE TABLE IF NOT EXISTS Matiere (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nom TEXT NOT NULL,
+    Nombre_Heures INTEGER NOT NULL,
+    Id_Professeur INTEGER NOT NULL, 
+    FOREIGN KEY (Id_Professeur)
+        REFERENCES Professeur(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+    );
+CREATE TABLE IF NOT EXISTS Classe (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nom TEXT NOT NULL,
+    Nom_Lycee TEXT NOT NULL,
+    Id_Professeur INTEGER NOT NULL, 
+    FOREIGN KEY (Id_Professeur)
+        REFERENCES Professeur(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+    );
+
+CREATE TABLE IF NOT EXISTS Eleve (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nom TEXT NOT NULL,
+    Prenom TEXT NOT NULL,
+    Date_de_Naissance DATE NOT NULL,
+    Id_Classe INTEGER,
+    FOREIGN KEY (Id_Classe)
+        REFERENCES Classe(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+    );
+
+CREATE TABLE If NOT EXISTS Inscription (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Id_Eleve INT NOT NULL,
+    Id_Matiere INT NOT NULL,
+    FOREIGN KEY (Id_Eleve)
+        REFERENCES Eleve(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+    FOREIGN KEY (Id_Matiere)
+        REFERENCES Matiere(Id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+
+)
+
