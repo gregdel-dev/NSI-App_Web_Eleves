@@ -5,29 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
     
-    <title>Elèves Directe - Accueil</title>
+    <title>Elèves Directe - Liste</title>
 </head>
 <body>
-    <div class="topbar">
-        <div class="logo">
-        <img src="../static/icon.png" alt="">
-        <h2>Elèves Directe</h2>
-        </div>
-        <form>
-            <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
-            <input type="hidden" name="type" value="recherche">
-        <button type="submit">Rechercher</button>
-    </form>
-    <nav>
-        <a href="/ajout" class="ajout_button">Ajouter des élèves</a>
-    </nav>
-    </div>
+    {% include "composants/topbar.html" %}
+    
 
-   <a class="back_button" href="/">Retour à l'acceuil</a>
+   <a class="back_button" href='{{infos["URL_ajout"]}}'>{{infos["ajout_boutton"]}}</a>
         
         
         <div class="haut_tableau">
-            <p id="compteur_text" class="compteur">Nombres d'élèves affichés : <span id="compteur"></span></p>
+            <p id="compteur_text" class="compteur">Nombres d'éléments affichés : <span id="compteur"></span></p>
             
             <div class="dropdown" id="dropdown">
                 <label for="dropdown">Trier par : </label>
@@ -35,9 +23,9 @@
                 <form method="POST">
                     <input type="hidden" name="type" value="tri">
                 <div class="dropdown-content">
-                    <button type="submit" name="tri" value="prenom" onclick="selectOption('prenom')">Prénom</button>
-                    <button type="submit" name="tri" value="nom" onclick="selectOption('nom')">Nom</button>
-                    <button type="submit" name="tri" value="age" onclick="selectOption('age')">Date de Naissance</button>
+                    {% for c in colonnes %}
+                    <button type="submit" name="tri" value='{{ c["id"] }}' onclick="selectOption({{ c['id'] }})">{{ c["titre"] }}</button>
+                    {% endfor %}
                     
                 </div>
                 </form>
@@ -54,26 +42,26 @@
                     <button type="submit" class="button-bleu">Appliquer</button>
                 </form>
             </div>
-            <a href="/liste" class="annuler-button">Annuler les filtres/tri</a>
+            <a href='{{infos["URL_actuelle"]}}' class="annuler-button">Annuler les filtres/tri</a>
             <a href="/export" class="export_boutton">Exporter</a>
         </div>
     <table>
                        
         <tr>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Date de Naissance</th>
+        {% for c in colonnes %}
+            <th>{{ c["titre"] }}</th>
+        {% endfor %}
         </tr>
-        {% for e in eleves %}
+        {% for v in valeurs %}
         <tr>
-            <td>{{ e[1] }}</td>
-            <td>{{ e[2] }}</td>
-            <td>{{ e[3] }}</td>
+            {% for c in colonnes %}
+            <td>{{v[c["order"]]}}</td>
+            {% endfor %}
             <td class="button_case">
                 
                 <form class="actions-buttons-form" method="POST"> 
-                    <a href="/update?id={{ e[0] }}">✏️ Modifier</a> 
-                    <input type="hidden" name="id" value="{{ e[0] }}">
+                    <a href="/update?id={{ v[0] }}">✏️ Modifier</a> 
+                    <input type="hidden" name="id" value="{{ v[0] }}">
                     <input type="hidden" name="type" value="supprimer">
                     <button type="submit">🗑️ Supprimer</button>
                 </form>
@@ -83,7 +71,7 @@
     </table>
 </body>
 <script>
-const eleves_ = {{ eleves|tojson }};
+const eleves_ = {{ valeurs|tojson }};
 document.getElementById("compteur").textContent = eleves_.length;
 
 

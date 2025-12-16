@@ -8,25 +8,13 @@
     <title>Elèves Directe - Accueil</title>
 </head>
 <body>
-    <div class="topbar">
-        <div class="logo">
-        <img src="../static/icon.png" alt="">
-        <h2>Elèves Directe</h2>
-        </div>
-        <form>
-        <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
-        <input type="hidden" name="type" value="recherche">
-        <button type="submit">Rechercher</button>
-    </form>
-    <nav>
-        <a href="/ajout" class="ajout_button">Ajouter des élèves</a>
-    </nav>
-    </div>
+    {% set hide_accueil_button = True %}
+    {% include "composants/topbar.html" %}
+
 
    <h1>Bienvenue sur Elèves Directe</h1>
    <div class="home-page-bouttons">
-    <a href="/liste" class="button-bleu">Aller à la liste des élèves</a>
-    <a href="/ajout" class="button-bleu">Ajouter un élève</a>
+    <a href="/eleve/liste" class="button-bleu">Gérer la liste des élèves</a>
 
    </div>
 </body>

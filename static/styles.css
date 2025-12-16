@@ -167,9 +167,14 @@ label{
     margin-right: 5px;
     
 }
+.topbar nav{
+    margin-left: 110px;
+}
 .logo{
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: white;
 }
 .button-bleu{
     background-color: #2563eb;
@@ -191,7 +196,7 @@ label{
     background-color: white;
     margin-right: 5px;
     cursor: pointer;
-    width: 188px;
+    width: 195px;
     
 }
 

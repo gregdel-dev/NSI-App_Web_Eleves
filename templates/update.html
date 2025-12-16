@@ -15,19 +15,14 @@
        
     <h1>Modifer des élèves</h1>
     <form method="POST">
-        <input type="hidden" name="id" value="{{ eleve[0] }}">
+        <input type="hidden" name="id" value="{{ valeurs[0] }}">
+        {% for c in colonnes %}
         <div class="form-element">
-            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text" value="{{eleve[1]}}"></label>
+            <label for='{{ c["id"] }}'>{{ c["titre"] }} : <input id='{{ c["id"] }}' name='{{ c["id"] }}' type='{{ c["type"] }}' value='{{valeurs[c["order"]]}}'></label>
             
         </div>
-        <div class="form-element">
-            <label for="nom">Nom : <input id="nom" name="nom" type="text" value="{{eleve[2]}}"></label>
-            
-        </div>
-        <div class="form-element">
-            <label for="Date_de_Naissance">Date de Naissance : <input id="Date_de_Naissance" name="Date_de_Naissance" type="number"value="{{eleve[3]}}"></label>
-            
-        </div>
+        {% endfor %}
+        
         <button class="submit_button" type="submit">Enregistrer</button>
     </form>
      </div>

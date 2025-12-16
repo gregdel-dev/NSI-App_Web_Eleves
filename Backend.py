@@ -104,6 +104,10 @@ def lire_eleve_filtre_Date_de_Naissance(debut, fin):
     conn.close()
     return eleves
 
+colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
+
+
+
 #routes :
 
 @app.route('/')
@@ -113,13 +117,13 @@ def home():
 
 
 
-@app.route('/liste', methods=["POST","GET"])
+@app.route('/eleve/liste', methods=["POST","GET"])
 def liste():
     if request.method=="POST":
 
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
-            return render_template('liste.html', eleves=lire_eleve_tri(critere))
+            return render_template('liste.html', valeurs=lire_eleve_tri(critere), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
         
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
@@ -128,17 +132,17 @@ def liste():
         if request.form.get("type")=="filtre":
             debut=request.form["debut"]
             fin=request.form["fin"]
-            return render_template('liste.html', eleves=lire_eleve_filtre_Date_de_Naissance(debut, fin))
+            return render_template('liste.html', valeurs=lire_eleve_filtre_Date_de_Naissance(debut, fin), colonnes=colonnes_eleve,infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
         
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', eleves=recherche_nom(chaine))
+        return render_template('liste.html', valeurs=recherche_nom(chaine), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
     
-    return render_template('liste.html', eleves=lire_eleves())
+    return render_template('liste.html', valeurs=lire_eleves(), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
 
 
 
-@app.route('/update', methods=["POST","GET"])
+@app.route('/eleve/update', methods=["POST","GET"])
 def update():
 
     id = request.args.get('id')
@@ -152,19 +156,19 @@ def update():
         modifier(id,prenom,nom,Date_de_Naissance)
         return redirect("/liste")
     
-    return render_template('update.html', eleve=lire_eleve(id))
+    return render_template('update.html', valeurs=lire_eleve(id), colonnes=colonnes_eleve)
 
 
 
-@app.route('/ajout', methods=["POST","GET"])
+@app.route('/eleve/ajout', methods=["POST","GET"])
 def ajout():
     if request.method=="POST":
-        prenom=request.form["prenom"]
-        nom=request.form["nom"]
+        prenom=request.form["Prenom"]
+        nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
         creer_eleve(prenom,nom,Date_de_Naissance)
 
-    return render_template('ajout.html')
+    return render_template('ajout.html', colonnes=colonnes_eleve, infos= {"URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
 @app.route('/favicon.ico')
 def favicon():

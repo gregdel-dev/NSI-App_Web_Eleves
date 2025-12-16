@@ -1,0 +1,16 @@
+<div class="topbar">
+        <a class="logo" href="/">
+        <img src="../static/icon.png" alt="">
+        <h2>Elèves Directe</h2>
+        </a>
+        <form>
+            <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
+            <input type="hidden" name="type" value="recherche">
+        <button type="submit">Rechercher</button>
+    </form>
+    <nav>
+        <a href='/' class="ajout_button"  {% if hide_accueil_button %}
+       style="display: none"
+     {% endif %}>Accueil</a>
+    </nav>
+    </div>

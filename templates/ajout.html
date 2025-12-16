@@ -8,24 +8,17 @@
 </head>
 <body>
     <a class="back_button" href="/">Retour à l'acceuil</a>
-    <a class="back_button" href="/liste">Aller a la liste</a>
+    <a class="back_button" href='{{ infos["URL_liste"] }}'>Aller a la liste</a>
     <div class="content-form">
     <div>
-    <h1>Ajouter des élèves</h1>
+    <h1>{{ infos["titre"] }}</h1>
     <form method="POST">
-        
+        {% for c in colonnes %}
         <div class="form-element">
-            <label for="prenom">Prénom : <input id="prenom" name="prenom" type="text"></label>
+            <label for='{{ c["id"] }}'>{{ c["titre"] }} : <input id='{{ c["id"] }}' name='{{ c["id"] }}' type='{{ c["type"] }}'></label>
             
         </div>
-        <div class="form-element">
-            <label for="nom">Nom : <input id="nom" name="nom" type="text"></label>
-            
-        </div>
-        <div class="form-element">
-            <label for="Date_de_Naissance">Date de Naissance : <input id="Date_de_Naissance" name="Date_de_Naissance" type="date"></label>
-            
-        </div>
+        {% endfor %}
         <button class="submit_button" type="submit">Enregistrer</button>
     </form>
     </div>
