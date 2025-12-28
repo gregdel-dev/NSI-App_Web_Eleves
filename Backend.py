@@ -12,10 +12,11 @@ app=Flask(__name__)
 BASE_DIR = path.dirname(path.abspath(__file__))
 DB_NAME = path.join(BASE_DIR,"base_de_donnees", "Base_de_donnees.sqlite")
 
+
 #on enregistre le contenu des fichiers .sql dans des variables
-with open("base_de_donnees/creer_tables.sql", "r", encoding="utf-8") as f:
+with open(path.join(BASE_DIR,"base_de_donnees", "creer_tables.sql"), "r", encoding="utf-8") as f:
     sql_creation = f.read()
-with open("base_de_donnees/supprimer_tables.sql", "r", encoding="utf-8") as f:
+with open(path.join(BASE_DIR,"base_de_donnees", "supprimer_tables.sql"), "r", encoding="utf-8") as f:
     sql_suppression = f.read() 
 
 #initialisation de la base de données
