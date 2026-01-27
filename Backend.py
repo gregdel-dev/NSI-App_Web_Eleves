@@ -26,6 +26,18 @@ c.executescript(sql_creation)
 conn.commit()
 conn.close()
 
+def execute_sql(commande, argument):
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    try:
+        c.execute(commande, argument)
+    except sqlite3.IntegrityError:
+        conn.close()
+        return False
+    conn.commit()
+    conn.close()
+    return 
+
 #fonctions de gestion de la base de donnée : 
 def creer_eleve(prenom, nom, Date_de_Naissance):
     conn = sqlite3.connect(DB_NAME)
@@ -106,7 +118,7 @@ def lire_eleve_filtre_Date_de_Naissance(debut, fin):
     return eleves
 
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
-
+colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
 
 
 #routes :
@@ -200,9 +212,37 @@ def export_json():
     response.headers["Content-Disposition"] = "attachment; filename=eleves.json"
     return response
 
+@app.route('/prof/ajout', methods=["POST","GET"])
+def ajout_prof():
+    if request.method=="POST":
+        prenom=request.form["Prenom"]
+        nom=request.form["Nom"]
+        execute_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
 
+    return render_template('ajout.html', colonnes=colonnes_prof, infos= {"URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
 
+@app.route('/prof/liste', methods=["POST","GET"])
+def liste_prof():
+    if request.method=="POST":
 
+        if request.form.get("type")=="tri":
+            critere=request.form.get("tri")
+            return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur ORDER BY ?",    ), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
+        
+        if request.form.get("type")=="supprimer":
+            id=request.form["id"]
+            execute_sql("DELETE FROM Eleve WHERE id=?", (str(id),))
+
+        if request.form.get("type")=="filtre":
+            debut=request.form["debut"]
+            fin=request.form["fin"]
+            return render_template('liste.html', valeurs=lire_eleve_filtre_Date_de_Naissance(debut, fin), colonnes=colonnes_eleve,infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
+        
+    if request.args.get("type")=="recherche":
+        chaine=request.args.get("recherche")
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE %?% OR Prenom LIKE %?%",(chaine, chaine)), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
+    
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" })
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
