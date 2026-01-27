@@ -239,46 +239,14 @@ label{
     color: #111;
     font-size: small;
 }
-.export_boutton{
-    background-color: #2563eb;
-    color : white;
-    border: none;
-    padding: 8px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    cursor: pointer;
-    text-decoration: none;  
-    margin-left: auto;
-  
-}
+
 .haut_tableau{
     display: flex;
     align-items: center;
     margin: 0;
 }
-.filtre{
-    position: relative;
-    display: inline-block;
-    margin-left: 20px;
-    margin-bottom: 0;
-}
-.filtre button{
-    padding: 4px;
-}
-.filtre input{
-    width: 70px;
-}
-.tri_button{
-    background: none;
-    border: none;
-    outline: none;
-    box-shadow: auto;
-    width: 100%;
-    
-    
 
-}
+
 .annuler-button{
     background-color: #2563eb;
     color : white;

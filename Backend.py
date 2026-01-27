@@ -26,7 +26,8 @@ c.executescript(sql_creation)
 conn.commit()
 conn.close()
 
-def execute_sql(commande, argument):
+#fonctions pour l'execution d'actions sur la base de données
+def edit_sql(commande, argument=()):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     try:
@@ -38,85 +39,18 @@ def execute_sql(commande, argument):
     conn.close()
     return 
 
-#fonctions de gestion de la base de donnée : 
-def creer_eleve(prenom, nom, Date_de_Naissance):
+def execute_sql(commande, argument=()):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    try:
-        c.execute("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance) VALUES (?, ?, ?)", (prenom, nom, Date_de_Naissance))
-    except sqlite3.IntegrityError:
-        conn.close()
-        return False
+    c.execute(commande, argument)
+    valeurs = c.fetchall()
     conn.commit()
     conn.close()
-    return 
+    return valeurs
 
-def lire_eleves():
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT * FROM Eleve")
-    eleves = c.fetchall()
-    conn.commit()
-    conn.close()
-    return eleves
 
-def lire_eleve(id):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT * FROM Eleve WHERE id = ?", (str(id),))
-    eleve = c.fetchone()
-    conn.commit()
-    conn.close()
-    return eleve
 
-def supprimer_eleve(id):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("DELETE FROM Eleve WHERE id = ?", (str(id),))
-    conn.commit()
-    conn.close()
-    return 
-
-def modifier(id, prenom, nom, Date_de_Naissance):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
-    if c.rowcount == 0:
-        c.execute("INSERT INTO Eleve (Id, Prenom, Nom, Date_de_Naissance) VALUES (?, ?, ?, ?)", (id, prenom, nom, Date_de_Naissance))
-    conn.commit()
-    conn.close()
-    return 
-
-def recherche_nom(chaine):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%"))
-    resultats = c.fetchall()
-    conn.commit()
-    conn.close()
-    return resultats
-
-def lire_eleve_tri(argument):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    if argument not in ["Prenom", "Nom", "Date_de_Naissance"]:
-        conn.close()
-        return []
-    c.execute(f"SELECT * FROM Eleve ORDER BY {argument}")
-    eleves = c.fetchall()
-    conn.commit()
-    conn.close()
-    return eleves
-
-def lire_eleve_filtre_Date_de_Naissance(debut, fin):
-    conn = sqlite3.connect(DB_NAME)
-    c = conn.cursor()
-    c.execute("SELECT * FROM Eleve WHERE Date_de_Naissance BETWEEN ? AND ?", (debut, fin))
-    eleves = c.fetchall()
-    conn.commit()
-    conn.close()
-    return eleves
-
+#colonnes
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
 
@@ -136,22 +70,18 @@ def liste():
 
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
-            return render_template('liste.html', valeurs=lire_eleve_tri(critere), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
+            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Eleve ORDER BY {critere}"), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
         
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
-            supprimer_eleve(id)
+            edit_sql("DELETE FROM Eleve WHERE id = ?", (str(id),))
 
-        if request.form.get("type")=="filtre":
-            debut=request.form["debut"]
-            fin=request.form["fin"]
-            return render_template('liste.html', valeurs=lire_eleve_filtre_Date_de_Naissance(debut, fin), colonnes=colonnes_eleve,infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
         
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=recherche_nom(chaine), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
     
-    return render_template('liste.html', valeurs=lire_eleves(), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve"), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
 
 
 
@@ -166,10 +96,10 @@ def update():
         prenom=request.form["prenom"]
         nom=request.form["nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
-        modifier(id,prenom,nom,Date_de_Naissance)
+        edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
         return redirect("/liste")
     
-    return render_template('update.html', valeurs=lire_eleve(id), colonnes=colonnes_eleve)
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),)), colonnes=colonnes_eleve)
 
 
 
@@ -179,7 +109,7 @@ def ajout():
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
-        creer_eleve(prenom,nom,Date_de_Naissance)
+        edit_sql("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance) VALUES (?, ?, ?)", (prenom, nom, Date_de_Naissance))
 
     return render_template('ajout.html', colonnes=colonnes_eleve, infos= {"URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
@@ -193,31 +123,14 @@ def favicon():
 
 
 
-@app.route('/export')
-def export_json():
-    data = []
-    eleves=lire_eleves()
-    for eleve in eleves:
-        data.append({
-            "id": eleve[0],
-            "prenom": eleve[1],
-            "nom": eleve[2],
-            "Date_de_Naissance": eleve[3]
-        })
-    json_data = dumps(data, indent=4, ensure_ascii=False)
-    response = Response(
-        BytesIO(json_data.encode('utf-8')),
-        mimetype="application/json"
-    )
-    response.headers["Content-Disposition"] = "attachment; filename=eleves.json"
-    return response
+
 
 @app.route('/prof/ajout', methods=["POST","GET"])
 def ajout_prof():
     if request.method=="POST":
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
-        execute_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
+        edit_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
 
     return render_template('ajout.html', colonnes=colonnes_prof, infos= {"URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
 
@@ -227,21 +140,20 @@ def liste_prof():
 
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
-            return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur ORDER BY ?",    ), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
+            if critere not in ['Nom', 'Prenom', 'Date_de_Naissance']:
+                return "Critère de tri invalide", 400
+            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Professeur ORDER BY {critere}", ()), colonnes=colonnes_prof, infos={"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
         
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
-            execute_sql("DELETE FROM Eleve WHERE id=?", (str(id),))
+            edit_sql("DELETE FROM Eleve WHERE id=?", (str(id),))
 
-        if request.form.get("type")=="filtre":
-            debut=request.form["debut"]
-            fin=request.form["fin"]
-            return render_template('liste.html', valeurs=lire_eleve_filtre_Date_de_Naissance(debut, fin), colonnes=colonnes_eleve,infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
+        
         
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE %?% OR Prenom LIKE %?%",(chaine, chaine)), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
-    
+        
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
     return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" })
 
 if __name__=="__main__":

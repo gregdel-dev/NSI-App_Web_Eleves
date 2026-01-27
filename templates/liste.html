@@ -31,19 +31,8 @@
                 </form>
                 </div>
             </div>
-            <div class="filtre">
-                <form method="POST">
-                    <input type="hidden" name="type" value="filtre">
-                    <label for="debut">Filtrer par age de </label>
-                    <input type="number" name="debut">
-                    <label for="fin"> à </label>
-                    <input type="number" name="fin">
-                    <label> ans</label>
-                    <button type="submit" class="button-bleu">Appliquer</button>
-                </form>
-            </div>
-            <a href='{{infos["URL_actuelle"]}}' class="annuler-button">Annuler les filtres/tri</a>
-            <a href="/export" class="export_boutton">Exporter</a>
+
+            <a href='{{infos["URL_actuelle"]}}' class="annuler-button">Annuler le tri</a>
         </div>
     <table>
                        
@@ -72,6 +61,7 @@
 </body>
 <script>
 const eleves_ = {{ valeurs|tojson }};
+const colonnes_= {{ colonnes|tojson }};
 document.getElementById("compteur").textContent = eleves_.length;
 
 
@@ -82,10 +72,11 @@ function toggleMenu() {
 
 async function selectOption(value) {  
     document.getElementById("tri").value=value
-    if (value === "prenom") document.querySelector(".dropdown-button").textContent = "Prénom ▿";
-    if (value === "nom") document.querySelector(".dropdown-button").textContent = "Nom ▿";
-    if (value === "age") document.querySelector(".dropdown-button").textContent = "Age ▿";
-    
+    colonnes_.forEach(element => {
+        if (value === element["id"]) document.querySelector(".dropdown-button").textContent = element.titre["titre"]+"▿";
+    });
+
+
     toggleMenu()
 }
 </script>
