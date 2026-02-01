@@ -49,7 +49,6 @@ def execute_sql(commande, argument=()):
     return valeurs
 
 
-
 #colonnes
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
@@ -60,8 +59,6 @@ colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titr
 @app.route('/')
 def home():
     return render_template('index.html')
-
-
 
 
 @app.route('/eleve/liste', methods=["POST","GET"])
@@ -84,7 +81,6 @@ def liste():
     return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve"), colonnes=colonnes_eleve, infos= {"URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
 
 
-
 @app.route('/eleve/update', methods=["POST","GET"])
 def update():
 
@@ -93,14 +89,13 @@ def update():
         return "Aucun ID fourni", 400
     
     if request.method=="POST":
-        prenom=request.form["prenom"]
-        nom=request.form["nom"]
+        prenom=request.form["Prenom"]
+        nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
         edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
-        return redirect("/liste")
+        return redirect("/eleve/liste")
     
     return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),)), colonnes=colonnes_eleve)
-
 
 
 @app.route('/eleve/ajout', methods=["POST","GET"])
@@ -113,6 +108,7 @@ def ajout():
 
     return render_template('ajout.html', colonnes=colonnes_eleve, infos= {"URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(
@@ -120,9 +116,6 @@ def favicon():
         'favicon.ico',
         mimetype='imDate_de_Naissance/vnd.microsoft.icon'
     )
-
-
-
 
 
 @app.route('/prof/ajout', methods=["POST","GET"])
@@ -147,9 +140,7 @@ def liste_prof():
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Eleve WHERE id=?", (str(id),))
-
-        
-        
+  
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
         
