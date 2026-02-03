@@ -3,8 +3,10 @@
         <img src="../static/icon.png" alt="">
         <h2>Elèves Directe</h2>
         </a>
-        <form>
-            <input type="text" name="recherche" placeholder="Rechercher un élève" value="{{ recherche }}">
+        <form {% if hide_accueil_button %}
+       style="display: none"
+     {% endif %}>
+            <input type="text" name="recherche" placeholder="Rechercher un {{infos['element']}}" value="{{ recherche }}">
             <input type="hidden" name="type" value="recherche">
         <button type="submit">Rechercher</button>
     </form>
