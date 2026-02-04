@@ -49,7 +49,7 @@
             <td class="button_case">
                 
                 <form class="actions-buttons-form" method="POST"> 
-                    <a href="/update?id={{ v[0] }}">✏️ Modifier</a> 
+                    <a href="{{ infos['URL_update']}}?id={{ v[0] }}">✏️ Modifier</a> 
                     <input type="hidden" name="id" value="{{ v[0] }}">
                     <input type="hidden" name="type" value="supprimer">
                     <button type="submit">🗑️ Supprimer</button>

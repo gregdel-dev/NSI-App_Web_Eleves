@@ -58,7 +58,7 @@ colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titr
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', infos={'element' : None})
 
 
 @app.route('/eleve/liste', methods=["POST","GET"])
@@ -78,7 +78,7 @@ def liste():
         chaine=request.args.get("recherche")
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
     
-    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve"), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" })
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve"), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves","URL_update": "/eleve/update" })
 
 
 @app.route('/eleve/update', methods=["POST","GET"])
@@ -145,7 +145,7 @@ def liste_prof():
         chaine=request.args.get("recherche")
         
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
-    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" })
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs","URL_update": "/prof/update" })
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
