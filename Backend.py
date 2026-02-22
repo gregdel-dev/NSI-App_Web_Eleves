@@ -147,11 +147,10 @@ def update2():
     if request.method=="POST":
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
-        Date_de_Naissance=request.form["Date_de_Naissance"]
-        edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
-        return redirect("/eleve/liste")
+        edit_sql("UPDATE Professeur SET Prenom = ?, Nom = ? WHERE Id = ?", (prenom, nom, id))
+        return redirect("/prof/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),)), colonnes=colonnes_eleve, infos={"element": "élève"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),)), colonnes=colonnes_eleve, infos={"element": "élève"})
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
