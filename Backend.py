@@ -83,11 +83,9 @@ def liste():
 
 @app.route('/eleve/update', methods=["POST","GET"])
 def update():
-
     id = request.args.get('id')
     if id is None:
         return "Aucun ID fourni", 400
-    
     if request.method=="POST":
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
@@ -105,7 +103,6 @@ def ajout():
         nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
         edit_sql("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance) VALUES (?, ?, ?)", (prenom, nom, Date_de_Naissance))
-
     return render_template('ajout.html', colonnes=colonnes_eleve, infos= {"element" : "élève","URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
 
@@ -124,28 +121,37 @@ def ajout_prof():
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
         edit_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
-
     return render_template('ajout.html', colonnes=colonnes_prof, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
 
 @app.route('/prof/liste', methods=["POST","GET"])
 def liste_prof():
     if request.method=="POST":
-
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
             if critere not in ['Nom', 'Prenom', 'Date_de_Naissance']:
                 return "Critère de tri invalide", 400
             return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Professeur ORDER BY {critere}", ()), colonnes=colonnes_prof, infos={"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
-        
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
-            edit_sql("DELETE FROM Eleve WHERE id=?", (str(id),))
-  
+            edit_sql("DELETE FROM Professeur WHERE id=?", (str(id),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
     return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs","URL_update": "/prof/update" })
+
+@app.route('/prof/update', methods=["POST","GET"])
+def update2():
+    id = request.args.get('id')
+    if id is None:
+        return "Aucun ID fourni", 400
+    if request.method=="POST":
+        prenom=request.form["Prenom"]
+        nom=request.form["Nom"]
+        Date_de_Naissance=request.form["Date_de_Naissance"]
+        edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
+        return redirect("/eleve/liste")
+    
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),)), colonnes=colonnes_eleve, infos={"element": "élève"})
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
