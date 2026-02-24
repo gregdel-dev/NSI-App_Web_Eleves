@@ -150,7 +150,7 @@ def update2():
         edit_sql("UPDATE Professeur SET Prenom = ?, Nom = ? WHERE Id = ?", (prenom, nom, id))
         return redirect("/prof/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),)), colonnes=colonnes_eleve, infos={"element": "élève"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),)), colonnes=colonnes_prof, infos={"element": "professeur"})
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
