@@ -93,7 +93,7 @@ def update():
         edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
         return redirect("/eleve/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),)), colonnes=colonnes_eleve, infos={"element": "élève"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], colonnes=colonnes_eleve, infos={"element": "élève"})
 
 
 @app.route('/eleve/ajout', methods=["POST","GET"])
@@ -150,15 +150,15 @@ def update2():
         edit_sql("UPDATE Professeur SET Prenom = ?, Nom = ? WHERE Id = ?", (prenom, nom, id))
         return redirect("/prof/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),)), colonnes=colonnes_prof, infos={"element": "professeur"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),))[0], colonnes=colonnes_prof, infos={"element": "professeur"})
 
 @app.route('/classe/ajout', methods=["POST","GET"])
 def ajout_classe():
     if request.method=="POST":
-        prenom=request.form["Prenom"]
         nom=request.form["Nom"]
-        edit_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
-    return render_template('ajout.html', colonnes=colonnes_prof, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
+        nom_lycee=request.form["Nom_Lycéen"]
+        edit_sql("INSERT INTO Professeur(Nom, Nom_Lycée) VALUES (?,?)",(nom, nom_lycee))
+    return render_template('ajout.html', colonnes=colonnes_classe, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
 
 
 if __name__=="__main__":
