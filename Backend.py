@@ -152,5 +152,14 @@ def update2():
     
     return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),)), colonnes=colonnes_prof, infos={"element": "professeur"})
 
+@app.route('/classe/ajout', methods=["POST","GET"])
+def ajout_classe():
+    if request.method=="POST":
+        prenom=request.form["Prenom"]
+        nom=request.form["Nom"]
+        edit_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
+    return render_template('ajout.html', colonnes=colonnes_prof, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
+
+
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
