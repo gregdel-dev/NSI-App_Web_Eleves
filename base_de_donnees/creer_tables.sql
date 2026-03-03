@@ -10,8 +10,6 @@ CREATE TABLE IF NOT EXISTS Matiere (
     Id_Professeur INTEGER NOT NULL, 
     FOREIGN KEY (Id_Professeur)
         REFERENCES Professeur(Id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
     );
 CREATE TABLE IF NOT EXISTS Classe (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,8 +18,6 @@ CREATE TABLE IF NOT EXISTS Classe (
     Id_Professeur INTEGER NOT NULL, 
     FOREIGN KEY (Id_Professeur)
         REFERENCES Professeur(Id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
     );
 
 CREATE TABLE IF NOT EXISTS Eleve (
@@ -32,8 +28,6 @@ CREATE TABLE IF NOT EXISTS Eleve (
     Id_Classe INTEGER,
     FOREIGN KEY (Id_Classe)
         REFERENCES Classe(Id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
     );
 
 CREATE TABLE If NOT EXISTS Inscription (
@@ -46,8 +40,6 @@ CREATE TABLE If NOT EXISTS Inscription (
         ON UPDATE CASCADE
     FOREIGN KEY (Id_Matiere)
         REFERENCES Matiere(Id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
 
 )
 

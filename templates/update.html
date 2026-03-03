@@ -17,10 +17,27 @@
     <form method="POST">
         <input type="hidden" name="id" value="{{ valeurs[0] }}">
         {% for c in colonnes %}
+        {% if {{ c["type"] }}=="dropdown" %}
+        <div class="dropdown" id="dropdown">
+                <label for="dropdown">Trier par : </label>
+                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;
+                
+                <input type="hidden" name="type" value="tri">
+                <div class="dropdown-content">
+                    {% for c in colonnes %}
+                    <button name="tri" value='{{ c["id"] }}' onclick="selectOption({{ c['id'] }})">{{ c["titre"] }}</button>
+                    {% endfor %}
+                    
+                </div>
+            
+                </div>
+            </div>
+        {% else %}
         <div class="form-element">
             <label for='{{ c["id"] }}'>{{ c["titre"] }} : <input id='{{ c["id"] }}' name='{{ c["id"] }}' type='{{ c["type"] }}' value='{{valeurs[c["order"]]}}'></label>
             
         </div>
+        {% endif %}
         {% endfor %}
         
         <button class="submit_button" type="submit">Enregistrer</button>

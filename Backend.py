@@ -30,11 +30,8 @@ conn.close()
 def edit_sql(commande, argument=()):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    try:
-        c.execute(commande, argument)
-    except sqlite3.IntegrityError:
-        conn.close()
-        return False
+    c.execute(commande, argument)
+    
     conn.commit()
     conn.close()
     return 
@@ -53,6 +50,7 @@ def execute_sql(commande, argument=()):
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
 colonnes_classe=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nom Lycée", "id":"Nom_Lycée", "type" : "text", "order": 2})
+colonnes_matiere=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nombre d'heures", "id":"Nombre_Heures", "type" : "number", "order": 2}, {"titre" : "Professeur", "id" : "Professeur", "type" : "dropdown", "order" : 3})
 
 #routes :
 
@@ -71,7 +69,7 @@ def liste():
         
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
-            edit_sql("DELETE FROM Eleve WHERE id = ?", (str(id),))
+            edit_sql("DELETE FROM Eleve WHERE Id = ?", (str(id),))
 
         
     if request.args.get("type")=="recherche":
@@ -133,7 +131,7 @@ def liste_prof():
             return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Professeur ORDER BY {critere}", ()), colonnes=colonnes_prof, infos={"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
-            edit_sql("DELETE FROM Professeur WHERE id=?", (str(id),))
+            edit_sql("DELETE FROM Professeur WHERE Id=?", (str(id),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
@@ -160,6 +158,51 @@ def ajout_classe():
         edit_sql("INSERT INTO Professeur(Nom, Nom_Lycée) VALUES (?,?)",(nom, nom_lycee))
     return render_template('ajout.html', colonnes=colonnes_classe, infos= {"element" : "classe","URL_liste": "/classe/liste", "titre": "Ajouter des classes", })
 
+
+
+
+
+@app.route('/matiere/liste', methods=["POST","GET"])
+def liste_matiere():
+    if request.method=="POST":
+        if request.form.get("type")=="tri":
+            critere=request.form.get("tri")
+            if critere not in ['Nom', 'Nombre_Heures']:
+                return "Critère de tri invalide", 400
+            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Matiere ORDER BY {critere}", ()), colonnes=colonnes_matiere, infos={"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières", "URL_actuelle": "/matiere/liste" })
+        if request.form.get("type")=="supprimer":
+            id=request.form["id"]
+            edit_sql("DELETE FROM Matiere WHERE Id=?", (str(id),))
+    if request.args.get("type")=="recherche":
+        chaine=request.args.get("recherche")
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières" }, recherche=chaine)
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere", ()), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières","URL_update": "/matiere/update" })
+
+@app.route('/matiere/update', methods=["POST","GET"])
+def update_matiere():
+    id = request.args.get('id')
+    if id is None:
+        return "Aucun ID fourni", 400
+    if request.method=="POST":
+        nb_heures=request.form["Nombre_Heures"]
+        nom=request.form["Nom"]
+        id_prof=1
+        edit_sql("UPDATE Matiere SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ?, WHERE Id = ?", (nb_heures, nom,id_prof, id))
+        return redirect("/prof/liste")
+    
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0], colonnes=colonnes_matiere, infos={"element": "matieres"})
+
+
+
+@app.route('/matiere/ajout', methods=["POST","GET"])
+def ajout_matiere():
+    if request.method=="POST":
+        nom=request.form["Nom"]
+        nb_heures=request.form["Nombre_Heures"]
+        id_prof=1
+        print(nom, nb_heures, execute_sql("SELECT * FROM Matiere", ()))
+        edit_sql("INSERT INTO Matiere (Nom, Nombre_Heures, Id_Professeur) VALUES (?,?,?)",(nom, nb_heures, id_prof))
+    return render_template('ajout.html', colonnes=colonnes_matiere, infos= {"element" : "matière","URL_liste": "/matiere/liste", "titre": "Ajouter des matières", })
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
