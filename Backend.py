@@ -52,7 +52,7 @@ def execute_sql(commande, argument=()):
 #colonnes
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
-
+colonnes_classe=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nom Lycée", "id":"Nom_Lycée", "type" : "text", "order": 2})
 
 #routes :
 
@@ -158,7 +158,7 @@ def ajout_classe():
         nom=request.form["Nom"]
         nom_lycee=request.form["Nom_Lycéen"]
         edit_sql("INSERT INTO Professeur(Nom, Nom_Lycée) VALUES (?,?)",(nom, nom_lycee))
-    return render_template('ajout.html', colonnes=colonnes_classe, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
+    return render_template('ajout.html', colonnes=colonnes_classe, infos= {"element" : "classe","URL_liste": "/classe/liste", "titre": "Ajouter des classes", })
 
 
 if __name__=="__main__":
