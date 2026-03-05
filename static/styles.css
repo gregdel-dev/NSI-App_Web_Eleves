@@ -48,7 +48,7 @@ th, td{
     margin-top: 20px;
     display: flex;
     flex-direction: column;
-    max-width: 300px;
+    max-width: 400px;
     align-items: end;
     
 }

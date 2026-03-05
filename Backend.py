@@ -186,11 +186,11 @@ def update_matiere():
     if request.method=="POST":
         nb_heures=request.form["Nombre_Heures"]
         nom=request.form["Nom"]
-        id_prof=1
-        edit_sql("UPDATE Matiere SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ?, WHERE Id = ?", (nb_heures, nom,id_prof, id))
-        return redirect("/prof/liste")
+        id_prof=request.form["Professeur_valeur"]
+        edit_sql("UPDATE Matiere SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nb_heures, nom, id_prof, id))
+        return redirect("/matiere/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0], colonnes=colonnes_matiere, infos={"element": "matieres"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_matiere, infos={"element": "matieres"})
 
 
 

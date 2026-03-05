@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css">
-    <title>Elèves Directe - Modifer</title>
+    <title>Elèves Directe - Modifier</title>
 </head>
 <body>
-    <a class="back_button" href="/">Retour à l'acceuil</a>
-    <a class="back_button" href="/liste">Aller a la liste</a>
+    <a class="back_button" href="/">Retour à l'accueil</a>
+    <a class="back_button" href="/liste">Aller à la liste</a>
     <div class="content-form">
     <div> 
 
@@ -17,21 +17,20 @@
     <form method="POST">
         <input type="hidden" name="id" value="{{ valeurs[0] }}">
         {% for c in colonnes %}
-        {% if {{ c["type"] }}=="dropdown" %}
-        <div class="dropdown" id="dropdown">
-                <label for="dropdown">Trier par : </label>
-                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;
-                
-                <input type="hidden" name="type" value="tri">
-                <div class="dropdown-content">
-                    {% for c in colonnes %}
-                    <button name="tri" value='{{ c["id"] }}' onclick="selectOption({{ c['id'] }})">{{ c["titre"] }}</button>
-                    {% endfor %}
-                    
+        {% if c["type"] == "dropdown" %}
+        <div class="dropdown" id="dropdown_{{ c['id'] }}" style="margin-bottom: 20px;">
+                <label for="dropdown_{{ c['id'] }}">{{ c["titre"] }} : </label>
+                <div id="dropdown-button_{{ c['id'] }}" class="dropdown-button" onclick="toggleMenu('{{ c['id'] }}')">
+                    <span id="dropdown-label_{{ c['id'] }}">{% for item in dropdown_values[c["id"]] %}{% if item[0] == valeurs[c["order"]] %}{{ item[1] }} {{ item[2] }}{% endif %}{% endfor %}</span> &#9663;
                 </div>
-            
+                <input id="dropdown-hidden_{{ c['id'] }}" type="hidden" name='{{ c["id"] }}_valeur' value='{{valeurs[c["order"]]}}'>
+                <div class="dropdown-content">
+                    {% for d in dropdown_values[c["id"]] %}
+                    <button type="button" name='{{ c["id"] }}' value='{{ d[0] }}' onclick="selectOption({{ d[0] }}, '{{ c['id'] }}')">{{ d[1] }} {{ d[2] }}</button>
+                    {% endfor %}
                 </div>
             </div>
+            
         {% else %}
         <div class="form-element">
             <label for='{{ c["id"] }}'>{{ c["titre"] }} : <input id='{{ c["id"] }}' name='{{ c["id"] }}' type='{{ c["type"] }}' value='{{valeurs[c["order"]]}}'></label>
@@ -45,4 +44,34 @@
      </div>
     </div>
 </body>
+<script>
+const eleves_ = {{ valeurs|tojson }};
+const colonnes_= {{ colonnes|tojson }};
+const dropdown_= {{dropdown_values|tojson}};
+//document.getElementById("compteur").textContent = eleves_.length;
+
+
+
+function toggleMenu(name) {
+  document.getElementById("dropdown_"+name).classList.toggle("show");
+}
+
+function selectOption(value,  name) {
+    // update hidden input for form submission
+    const hidden = document.getElementById("dropdown-hidden_"+name);
+    let value_name=0
+    const this_dropdown=dropdown_[name]
+    
+    this_dropdown.forEach(element => {
+        if (value === element[0]) value_name = element[1] + ' ' + element[2];
+        console.log(value, element, )
+    });
+    if (hidden) hidden.value = value;
+    console.log(this_dropdown, hidden.value);
+    // update visible button label
+    const label = document.getElementById("dropdown-label_"+name);
+    if (label) label.textContent = value_name;
+    toggleMenu(name);
+}
+</script>
 </html>
