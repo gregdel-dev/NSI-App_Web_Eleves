@@ -45,6 +45,37 @@ def execute_sql(commande, argument=()):
     conn.close()
     return valeurs
 
+def convert_en_dico(donnes):
+    dico={}
+    for i in donnes: 
+        dico[i[0]]=i
+    return dico
+def remplacer_elements(element, donnes):
+    print(donnes)
+    for i in donnes:
+        d=donnes.pop(0)
+        donnes.append(list(d))
+    if element=="Matiere" or element=="Classe":
+        profs=convert_en_dico(execute_sql("SELECT * FROM Professeur"))
+        for i in donnes:
+            i[3]=profs[i[3]][1]+" "+profs[i[3]][2]
+    if element=="Eleve":
+        classes=convert_en_dico(execute_sql("SELECT * FROM Classe"))
+        for i in donnes:
+            i[4]=classes[i[4]][1]
+
+    if element=="Inscription":
+        eleves=convert_en_dico(execute_sql("SELECT * FROM Eleve"))
+        for i in donnes:
+            i[1]=eleves[i[1]][2]+" "+ eleves[i[1]][1]
+        
+        matieres=convert_en_dico(execute_sql("SELECT * FROM Matiere"))
+        for i in donnes:
+            i[2]=matieres[i[2]][1]
+    for i in donnes:
+        d=donnes.pop(0)
+        donnes.append(tuple(d))
+    return donnes
 
 #colonnes
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
@@ -176,7 +207,7 @@ def liste_matiere():
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières" }, recherche=chaine)
-    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere", ()), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières","URL_update": "/matiere/update" })
+    return render_template('liste.html', valeurs=remplacer_elements("Matiere",execute_sql("SELECT * FROM Matiere", ())), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières","URL_update": "/matiere/update" })
 
 @app.route('/matiere/update', methods=["POST","GET"])
 def update_matiere():
@@ -202,7 +233,7 @@ def ajout_matiere():
         id_prof=1
         print(nom, nb_heures, execute_sql("SELECT * FROM Matiere", ()))
         edit_sql("INSERT INTO Matiere (Nom, Nombre_Heures, Id_Professeur) VALUES (?,?,?)",(nom, nb_heures, id_prof))
-    return render_template('ajout.html', colonnes=colonnes_matiere, infos= {"element" : "matière","URL_liste": "/matiere/liste", "titre": "Ajouter des matières", })
+    return render_template('ajout.html', colonnes=colonnes_matiere, dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, infos= {"element" : "matière","URL_liste": "/matiere/liste", "titre": "Ajouter des matières", })
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)

@@ -45,12 +45,7 @@
     </div>
 </body>
 <script>
-const eleves_ = {{ valeurs|tojson }};
-const colonnes_= {{ colonnes|tojson }};
 const dropdown_= {{dropdown_values|tojson}};
-//document.getElementById("compteur").textContent = eleves_.length;
-
-
 
 function toggleMenu(name) {
   document.getElementById("dropdown_"+name).classList.toggle("show");
