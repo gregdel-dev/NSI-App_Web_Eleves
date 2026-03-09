@@ -80,7 +80,7 @@ def remplacer_elements(element, donnes):
 #colonnes
 colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
-colonnes_classe=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nom Lycée", "id":"Nom_Lycée", "type" : "text", "order": 2})
+colonnes_classe=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nom Lycée", "id":"Nom_Lycee", "type" : "text", "order": 2})
 colonnes_matiere=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nombre d'heures", "id":"Nombre_Heures", "type" : "number", "order": 2}, {"titre" : "Professeur", "id" : "Professeur", "type" : "dropdown", "order" : 3})
 
 #routes :
@@ -185,10 +185,26 @@ def update2():
 def ajout_classe():
     if request.method=="POST":
         nom=request.form["Nom"]
-        nom_lycee=request.form["Nom_Lycéen"]
-        edit_sql("INSERT INTO Professeur(Nom, Nom_Lycée) VALUES (?,?)",(nom, nom_lycee))
+        nom_lycee=request.form["Nom_Lycee"]
+        id_prof=1
+        edit_sql("INSERT INTO Classe (Nom, Nom_Lycee,Id_Professeur) VALUES (?,?,?)",(nom, nom_lycee,id_prof))
     return render_template('ajout.html', colonnes=colonnes_classe, infos= {"element" : "classe","URL_liste": "/classe/liste", "titre": "Ajouter des classes", })
 
+@app.route('/classe/liste', methods=["POST","GET"])
+def liste_classe():
+    if request.method=="POST":
+        if request.form.get("type")=="tri":
+            critere=request.form.get("tri")
+            if critere not in ['Nom','Nom_lycee']:
+                return "Critère de tri invalide", 400
+            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Classe ORDER BY {critere}", ()), colonnes=colonnes_classe, infos={"element" : "classe","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des classes", "URL_actuelle": "/classe/liste" })
+        if request.form.get("type")=="supprimer":
+            id=request.form["id"]
+            edit_sql("DELETE FROM Classe WHERE Id=?", (str(id),))
+    if request.args.get("type")=="recherche":
+        chaine=request.args.get("recherche")
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_classe, infos= {"element" : "classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classe" }, recherche=chaine)
+    return render_template('liste.html', valeurs=remplacer_elements("classe",execute_sql("SELECT * FROM Classe", ())), colonnes=colonnes_classe, infos= {"element" : "Classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classes","URL_update": "/classes/update" })
 
 
 
