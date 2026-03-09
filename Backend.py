@@ -206,6 +206,19 @@ def liste_classe():
         return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_classe, infos= {"element" : "classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classe" }, recherche=chaine)
     return render_template('liste.html', valeurs=remplacer_elements("classe",execute_sql("SELECT * FROM Classe", ())), colonnes=colonnes_classe, infos= {"element" : "Classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classes","URL_update": "/classes/update" })
 
+@app.route('/classe/update', methods=["POST","GET"])
+def update_classe():
+    id = request.args.get('id')
+    if id is None:
+        return "Aucun ID fourni", 400
+    if request.method=="POST":
+        nom_lycee=request.form["Nom_Lycee"]
+        nom=request.form["Nom"]
+        id_prof=request.form["Professeur_valeur"]
+        edit_sql("UPDATE CLasse SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nom_lycee, nom, id_prof, id))
+        return redirect("/classe/liste")
+    
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "classe"})
 
 
 
