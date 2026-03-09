@@ -41,7 +41,7 @@
     </div>
 </body>
 <script>
-const dropdown_= {{dropdown_values|tojson}};
+const dropdown_ = {{ dropdown_values|default({})|tojson }};
 
 function toggleMenu(name) {
   document.getElementById("dropdown_"+name).classList.toggle("show");
@@ -51,7 +51,7 @@ function selectOption(value,  name) {
     // update hidden input for form submission
     const hidden = document.getElementById("dropdown-hidden_"+name);
     let value_name=0
-    const this_dropdown=dropdown_[name]
+    const this_dropdown=dropdown_[name] || [];
     
     this_dropdown.forEach(element => {
         if (value === element[0]) value_name = element[1] + ' ' + element[2];
