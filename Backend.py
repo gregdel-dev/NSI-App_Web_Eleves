@@ -214,7 +214,7 @@ def update_classe():
     if request.method=="POST":
         nom_lycee=request.form["Nom_Lycee"]
         nom=request.form["Nom"]
-        id_prof=1
+        id_prof=request.form["Professeur_valeur"]
         edit_sql("UPDATE Classe SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nom_lycee, nom, id_prof, id))
         return redirect("/classe/liste")
     
