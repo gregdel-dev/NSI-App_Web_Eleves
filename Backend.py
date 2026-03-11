@@ -122,7 +122,7 @@ def update():
         edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
         return redirect("/eleve/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], colonnes=colonnes_eleve, infos={"element": "élève"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], colonnes=colonnes_eleve, infos={"element": "élève","URL_liste": "/eleve/liste"})
 
 
 @app.route('/eleve/ajout', methods=["POST","GET"])
@@ -179,7 +179,7 @@ def update2():
         edit_sql("UPDATE Professeur SET Prenom = ?, Nom = ? WHERE Id = ?", (prenom, nom, id))
         return redirect("/prof/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),))[0], colonnes=colonnes_prof, infos={"element": "professeur"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),))[0], colonnes=colonnes_prof, infos={"element": "professeur", "URL_liste": "/prof/liste",})
 
 @app.route('/classe/ajout', methods=["POST","GET"])
 def ajout_classe():
@@ -215,10 +215,10 @@ def update_classe():
         nom_lycee=request.form["Nom_Lycee"]
         nom=request.form["Nom"]
         id_prof=1
-        edit_sql("UPDATE Classe SET Nom = ?, Nom_lycee = ? Id_Professeur = ? WHERE Id = ?", (nom_lycee, nom, id_prof, id))
+        edit_sql("UPDATE Classe SET Nom = ?, Nom_lycee = ?, Id_Professeur = ? WHERE Id = ?", ( nom,nom_lycee, id_prof, id))
         return redirect("/classe/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "classe"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "classe","URL_liste": "/classe/liste"})
 
 
 
@@ -250,7 +250,7 @@ def update_matiere():
         edit_sql("UPDATE Matiere SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nb_heures, nom, id_prof, id))
         return redirect("/matiere/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_matiere, infos={"element": "matieres"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_matiere, infos={"element": "matieres","URL_liste": "/matiere/liste"})
 
 
 
