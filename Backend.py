@@ -214,8 +214,8 @@ def update_classe():
     if request.method=="POST":
         nom_lycee=request.form["Nom_Lycee"]
         nom=request.form["Nom"]
-        id_prof=request.form["Professeur_valeur"]
-        edit_sql("UPDATE Classe SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nom_lycee, nom, id_prof, id))
+        id_prof=1
+        edit_sql("UPDATE Classe SET Nom = ?, Nom_lycee = ? Id_Professeur = ? WHERE Id = ?", (nom_lycee, nom, id_prof, id))
         return redirect("/classe/liste")
     
     return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "classe"})
