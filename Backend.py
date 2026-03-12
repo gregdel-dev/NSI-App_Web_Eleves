@@ -3,6 +3,7 @@ from flask import Flask,render_template, send_from_directory, request, Response,
 from os import path
 from io import BytesIO
 from json import dumps
+from datetime import datetime
 
 
 #creation de l'app flask
@@ -45,11 +46,22 @@ def execute_sql(commande, argument=()):
     conn.close()
     return valeurs
 
+
+
 def convert_en_dico(donnes):
     dico={}
     for i in donnes: 
         dico[i[0]]=i
     return dico
+
+def calculer_age(date_de_naissance_):
+    date_de_naissance=datetime.strptime(date_de_naissance_, "%Y-%m-%d").date()
+    aujourd_hui = datetime.now().date()
+    annees = aujourd_hui.year - date_de_naissance.year
+    if (aujourd_hui.month, aujourd_hui.day) < (date_de_naissance.month, date_de_naissance.day):
+        annees -= 1
+    return annees
+
 def remplacer_elements(element, donnes):
     print(donnes)
     for i in donnes:
@@ -63,11 +75,12 @@ def remplacer_elements(element, donnes):
         classes=convert_en_dico(execute_sql("SELECT * FROM Classe"))
         for i in donnes:
             i[4]=classes[i[4]][1]
+            i[3]=calculer_age(i[3])
 
     if element=="Inscription":
         eleves=convert_en_dico(execute_sql("SELECT * FROM Eleve"))
         for i in donnes:
-            i[1]=eleves[i[1]][2]+" "+ eleves[i[1]][1]
+            i[1]=eleves[i[1]][2]+" "+ eleves[i[1]][1]  
         
         matieres=convert_en_dico(execute_sql("SELECT * FROM Matiere"))
         for i in donnes:
@@ -78,7 +91,7 @@ def remplacer_elements(element, donnes):
     return donnes
 
 #colonnes
-colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3})
+colonnes_eleve=({"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 1},{"titre" : "Nom", "id":"Nom", "type" : "text", "order": 2},{"titre" : "Date de Naissance", "id":"Date_de_Naissance", "type" : "date", "order": 3}, {"titre" : "Classe", "id" : "Classe", "type" : "dropdown", "order" : 4})
 colonnes_prof=({"titre" : "Nom", "id":"Nom", "type" : "text", "order": 1},{"titre" : "Prénom", "id":"Prenom", "type" : "text", "order": 2})
 colonnes_classe=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nom Lycée", "id":"Nom_Lycee", "type" : "text", "order": 2}, {"titre" : "Professeur", "id" : "Professeur", "type" : "dropdown", "order" : 3})
 colonnes_matiere=({"titre" : "Nom", "id" : "Nom", "type" : "text", "order" : 1},{"titre" : "Nombre d'heures", "id":"Nombre_Heures", "type" : "number", "order": 2}, {"titre" : "Professeur", "id" : "Professeur", "type" : "dropdown", "order" : 3})
@@ -92,12 +105,20 @@ def home():
 
 
 @app.route('/eleve/liste', methods=["POST","GET"])
-def liste():
+def liste_eleve():
+    colonnes=[]
+    for i in range(len(colonnes_eleve)): 
+        colonnes.append(colonnes_eleve[i].copy())
+
+    colonnes[2]["titre"]="Age"
+    colonnes=tuple(colonnes)
     if request.method=="POST":
 
         if request.form.get("type")=="tri":
             critere=request.form.get("tri")
-            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Eleve ORDER BY {critere}"), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
+            if critere=="Classe": 
+                critere="Id_Classe"
+            return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql(f"SELECT * FROM Eleve ORDER BY {critere}")), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
         
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
@@ -106,13 +127,13 @@ def liste():
         
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
+        return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%"))), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
     
-    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve"), colonnes=colonnes_eleve, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves","URL_update": "/eleve/update" })
+    return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve")), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves","URL_update": "/eleve/update" })
 
 
 @app.route('/eleve/update', methods=["POST","GET"])
-def update():
+def update_eleve():
     id = request.args.get('id')
     if id is None:
         return "Aucun ID fourni", 400
@@ -120,20 +141,22 @@ def update():
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
-        edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id))
+        id_classe=request.form["Classe_valeur"]
+        edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ?, Id_Classe = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id_classe, id))
         return redirect("/eleve/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], colonnes=colonnes_eleve, infos={"element": "élève","URL_liste": "/eleve/liste"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, colonnes=colonnes_eleve, infos={"element": "élève","URL_liste": "/eleve/liste"})
 
 
 @app.route('/eleve/ajout', methods=["POST","GET"])
-def ajout():
+def ajout_eleve():
     if request.method=="POST":
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
         Date_de_Naissance=request.form["Date_de_Naissance"]
-        edit_sql("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance) VALUES (?, ?, ?)", (prenom, nom, Date_de_Naissance))
-    return render_template('ajout.html', colonnes=colonnes_eleve, infos= {"element" : "élève","URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
+        id_classe=request.form["Classe_valeur"]
+        edit_sql("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance, Id_Classe) VALUES (?, ?, ?, ?)", (prenom, nom, Date_de_Naissance, id_classe))
+    return render_template('ajout.html', colonnes=colonnes_eleve, dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, infos= {"element" : "élève","URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
 
 @app.route('/favicon.ico')
@@ -170,7 +193,7 @@ def liste_prof():
     return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs","URL_update": "/prof/update" })
 
 @app.route('/prof/update', methods=["POST","GET"])
-def update2():
+def update_prof():
     id = request.args.get('id')
     if id is None:
         return "Aucun ID fourni", 400

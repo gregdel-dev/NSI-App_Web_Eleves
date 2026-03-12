@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS Eleve (
     Prenom TEXT NOT NULL,
     Nom TEXT NOT NULL,
     Date_de_Naissance DATE NOT NULL,
-    Id_Classe INTEGER,
+    Id_Classe INTEGER NOT NULL,
     FOREIGN KEY (Id_Classe)
         REFERENCES Classe(Id)
     );
