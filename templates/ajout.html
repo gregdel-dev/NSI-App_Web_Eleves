@@ -23,7 +23,7 @@
                 <input id="dropdown-hidden_{{ c['id'] }}" type="hidden" name='{{ c["id"] }}_valeur'>
                 <div class="dropdown-content">
                     {% for d in dropdown_values[c["id"]] %}
-                    <button type="button" name='{{ c["id"] }}' value='{{ d[0] }}' onclick="selectOption({{ d[0] }}, '{{ c['id'] }}')">{{ d[1] }} {{ d[2] }}</button>
+                    <button type="button" name='{{ c["id"] }}' value='{{ d[0] }}' onclick="selectOption({{ d[0] }}, '{{ c['id'] }}')">{{ d[1] }} {% if c["id"]!="Id_Matiere"%} {{ d[2] }} {%endif%}</button>
                     {% endfor %}
                 </div>
             </div>
@@ -52,11 +52,20 @@ function selectOption(value,  name) {
     const hidden = document.getElementById("dropdown-hidden_"+name);
     let value_name=0
     const this_dropdown=dropdown_[name] || [];
-    
+    if (name!=="Id_Matiere"){
     this_dropdown.forEach(element => {
         if (value === element[0]) value_name = element[1] + ' ' + element[2];
         console.log(value, element, )
     });
+    }
+
+    else {
+        this_dropdown.forEach(element => {
+        if (value === element[0]) value_name = element[1];
+        console.log(value, element, )
+        });
+    }
+    
     if (hidden) hidden.value = value;
     console.log(this_dropdown, hidden.value);
     // update visible button label

@@ -21,12 +21,12 @@
         <div class="dropdown" id="dropdown_{{ c['id'] }}" style="margin-bottom: 20px;">
                 <label for="dropdown_{{ c['id'] }}">{{ c["titre"] }} : </label>
                 <div id="dropdown-button_{{ c['id'] }}" class="dropdown-button" onclick="toggleMenu('{{ c['id'] }}')">
-                    <span id="dropdown-label_{{ c['id'] }}">{% for item in dropdown_values[c["id"]] %}{% if item[0] == valeurs[c["order"]] %}{{ item[1] }} {{ item[2] }}{% endif %}{% endfor %}</span> &#9663;
+                    <span id="dropdown-label_{{ c['id'] }}">{% for item in dropdown_values[c["id"]] %}{% if item[0] == valeurs[c["order"]] %}{{ item[1] }} {% if c["id"]!="Id_Matiere"%} {{ item[2] }} {%endif%}{% endif %}{% endfor %}</span> &#9663;
                 </div>
                 <input id="dropdown-hidden_{{ c['id'] }}" type="hidden" name='{{ c["id"] }}_valeur' value='{{valeurs[c["order"]]}}'>
                 <div class="dropdown-content">
                     {% for d in dropdown_values[c["id"]] %}
-                    <button type="button" name='{{ c["id"] }}' value='{{ d[0] }}' onclick="selectOption({{ d[0] }}, '{{ c['id'] }}')">{{ d[1] }} {{ d[2] }}</button>
+                    <button type="button" name='{{ c["id"] }}' value='{{ d[0] }}' onclick="selectOption({{ d[0] }}, '{{ c['id'] }}')">{{ d[1] }} {% if c["id"]!="Id_Matiere"%} {{ d[2] }} {%endif%}</button>
                     {% endfor %}
                 </div>
             </div>
