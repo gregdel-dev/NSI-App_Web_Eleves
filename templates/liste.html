@@ -17,22 +17,9 @@
         <div class="haut_tableau">
             <p id="compteur_text" class="compteur">Nombres d'éléments affichés : <span id="compteur"></span></p>
             
-            <div class="dropdown" id="dropdown">
-                <label for="dropdown">Trier par : </label>
-                <div class="dropdown-button" onclick="toggleMenu()">Selectionner un élément &#9663;
-                <form method="POST">
-                    <input type="hidden" name="type" value="tri">
-                <div class="dropdown-content">
-                    {% for c in colonnes %}
-                    <button type="submit" name="tri" value='{{ c["id"] }}' onclick="selectOption({{ c['id'] }})">{{ c["titre"] }}</button>
-                    {% endfor %}
-                    
-                </div>
-                </form>
-                </div>
-            </div>
-
-            <a href='{{infos["URL_actuelle"]}}' class="annuler-button">Annuler le tri</a>
+            
+            
+            
         </div>
     <table>
                        

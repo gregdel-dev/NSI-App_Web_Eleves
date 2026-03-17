@@ -6,7 +6,7 @@
         <form {% if hide_accueil_button %}
        style="display: none"
      {% endif %}>
-            <input type="text" name="recherche" placeholder="Rechercher un {{infos['element']}}" value="{{ recherche }}">
+            <input type="text" name="recherche" placeholder="Rechercher {{infos['element']}}" value="{{ recherche }}">
             <input type="hidden" name="type" value="recherche">
         <button type="submit">Rechercher</button>
     </form>

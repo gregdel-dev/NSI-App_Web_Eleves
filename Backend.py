@@ -17,8 +17,8 @@ DB_NAME = path.join(BASE_DIR,"base_de_donnees", "Base_de_donnees.sqlite")
 #on enregistre le contenu des fichiers .sql dans des variables
 with open(path.join(BASE_DIR,"base_de_donnees", "creer_tables.sql"), "r", encoding="utf-8") as f:
     sql_creation = f.read()
-with open(path.join(BASE_DIR,"base_de_donnees", "supprimer_tables.sql"), "r", encoding="utf-8") as f:
-    sql_suppression = f.read() 
+#with open(path.join(BASE_DIR,"base_de_donnees", "supprimer_tables.sql"), "r", encoding="utf-8") as f:
+#    sql_suppression = f.read() 
 
 #initialisation de la base de données
 conn = sqlite3.connect(DB_NAME)
@@ -31,6 +31,7 @@ conn.close()
 def edit_sql(commande, argument=()):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
+
     c.execute(commande, argument)
     
     conn.commit()
@@ -40,14 +41,16 @@ def edit_sql(commande, argument=()):
 def execute_sql(commande, argument=()):
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
+
     c.execute(commande, argument)
+
     valeurs = c.fetchall()
     conn.commit()
     conn.close()
     return valeurs
 
 
-
+#fonctions
 def convert_en_dico(donnes):
     dico={}
     for i in donnes: 
@@ -63,7 +66,6 @@ def calculer_age(date_de_naissance_):
     return annees
 
 def remplacer_elements(element, donnes):
-    print(donnes)
     for i in donnes:
         d=donnes.pop(0)
         donnes.append(list(d))
@@ -106,30 +108,22 @@ def home():
 
 @app.route('/eleve/liste', methods=["POST","GET"])
 def liste_eleve():
+    #remplacement du nom de colonne de la date de naissance par age
     colonnes=[]
     for i in range(len(colonnes_eleve)): 
         colonnes.append(colonnes_eleve[i].copy())
-
     colonnes[2]["titre"]="Age"
     colonnes=tuple(colonnes)
-    if request.method=="POST":
 
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere=="Classe": 
-                critere="Id_Classe"
-            return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql(f"SELECT * FROM Eleve ORDER BY {critere}")), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves", "URL_actuelle": "/eleve/liste" })
-        
+    if request.method=="POST":        
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Eleve WHERE Id = ?", (str(id),))
-
-        
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%"))), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
+        return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve WHERE Prenom LIKE ? OR Nom LIKE ?", (f"%{chaine}%", f"%{chaine}%"))), colonnes=colonnes, infos= {"element" : "des élèves","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves" }, recherche=chaine)
     
-    return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve")), colonnes=colonnes, infos= {"element" : "élève","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves","URL_update": "/eleve/update" })
+    return render_template('liste.html', valeurs=remplacer_elements("Eleve", execute_sql("SELECT * FROM Eleve")), colonnes=colonnes, infos= {"element" : "des élèves","URL_ajout": "/eleve/ajout", "titre": "Ajouter des élèves", "ajout_boutton": "Ajouter des élèves","URL_update": "/eleve/update" })
 
 
 @app.route('/eleve/update', methods=["POST","GET"])
@@ -145,7 +139,7 @@ def update_eleve():
         edit_sql("UPDATE Eleve SET Prenom = ?, Nom = ?, Date_de_Naissance = ?, Id_Classe = ? WHERE Id = ?", (prenom, nom, Date_de_Naissance, id_classe, id))
         return redirect("/eleve/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, colonnes=colonnes_eleve, infos={"element": "élève","URL_liste": "/eleve/liste"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE id = ?", (str(id),))[0], dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, colonnes=colonnes_eleve, infos={"element": "des élèves","URL_liste": "/eleve/liste"})
 
 
 @app.route('/eleve/ajout', methods=["POST","GET"])
@@ -156,7 +150,7 @@ def ajout_eleve():
         Date_de_Naissance=request.form["Date_de_Naissance"]
         id_classe=request.form["Classe_valeur"]
         edit_sql("INSERT INTO Eleve (Prenom, Nom, Date_de_Naissance, Id_Classe) VALUES (?, ?, ?, ?)", (prenom, nom, Date_de_Naissance, id_classe))
-    return render_template('ajout.html', colonnes=colonnes_eleve, dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, infos= {"element" : "élève","URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
+    return render_template('ajout.html', colonnes=colonnes_eleve, dropdown_values={"Classe": execute_sql("SELECT * FROM Classe")}, infos= {"element" : "des élèves","URL_liste": "/eleve/liste", "titre": "Ajouter des élèves", })
 
 
 @app.route('/favicon.ico')
@@ -174,23 +168,18 @@ def ajout_prof():
         prenom=request.form["Prenom"]
         nom=request.form["Nom"]
         edit_sql("INSERT INTO Professeur(Nom, Prenom) VALUES (?,?)",(nom, prenom))
-    return render_template('ajout.html', colonnes=colonnes_prof, infos= {"element" : "professeur","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
+    return render_template('ajout.html', colonnes=colonnes_prof, infos= {"element" : "des professeurs","URL_liste": "/prof/liste", "titre": "Ajouter des professeurs", })
 
 @app.route('/prof/liste', methods=["POST","GET"])
 def liste_prof():
     if request.method=="POST":
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere not in ['Nom', 'Prenom', 'Date_de_Naissance']:
-                return "Critère de tri invalide", 400
-            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Professeur ORDER BY {critere}", ()), colonnes=colonnes_prof, infos={"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs", "URL_actuelle": "/prof/liste" })
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Professeur WHERE Id=?", (str(id),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
-    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "professeur","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs","URL_update": "/prof/update" })
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE Nom LIKE ? OR Prenom LIKE ?",(f"%{chaine}%", f"%{chaine}%")), colonnes=colonnes_prof, infos= {"element" : "des professeurs","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs" }, recherche=chaine)
+    return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Professeur", ()), colonnes=colonnes_prof, infos= {"element" : "des professeurs","URL_ajout": "/prof/ajout", "titre": "Ajouter des Professeurs", "ajout_boutton": "Ajouter des Professeurs","URL_update": "/prof/update" })
 
 @app.route('/prof/update', methods=["POST","GET"])
 def update_prof():
@@ -203,7 +192,7 @@ def update_prof():
         edit_sql("UPDATE Professeur SET Prenom = ?, Nom = ? WHERE Id = ?", (prenom, nom, id))
         return redirect("/prof/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),))[0], colonnes=colonnes_prof, infos={"element": "professeur", "URL_liste": "/prof/liste",})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Professeur WHERE id = ?", (str(id),))[0], colonnes=colonnes_prof, infos={"element": "des professeurs", "URL_liste": "/prof/liste",})
 
 
 
@@ -216,23 +205,18 @@ def ajout_classe():
         nom_lycee=request.form["Nom_Lycee"]
         id_prof=request.form["Professeur_valeur"]
         edit_sql("INSERT INTO Classe (Nom, Nom_Lycee,Id_Professeur) VALUES (?,?,?)",(nom, nom_lycee,id_prof))
-    return render_template('ajout.html', colonnes=colonnes_classe,dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, infos= {"element" : "classe","URL_liste": "/classe/liste", "titre": "Ajouter des classes", })
+    return render_template('ajout.html', colonnes=colonnes_classe,dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, infos= {"element" : "des classes","URL_liste": "/classe/liste", "titre": "Ajouter des classes", })
 
 @app.route('/classe/liste', methods=["POST","GET"])
 def liste_classe():
     if request.method=="POST":
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere not in ['Nom','Nom_lycee']:
-                return "Critère de tri invalide", 400
-            return render_template('liste.html', valeurs=remplacer_elements("Classe",execute_sql(f"SELECT * FROM Classe ORDER BY {critere}", ())), colonnes=colonnes_classe, infos={"element" : "classe","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des classes", "URL_actuelle": "/classe/liste" })
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Classe WHERE Id=?", (str(id),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=remplacer_elements("Classe",execute_sql("SELECT * FROM Classe WHERE Nom LIKE ?",(f"%{chaine}%",))), colonnes=colonnes_classe, infos= {"element" : "classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classe" }, recherche=chaine)
-    return render_template('liste.html', valeurs=remplacer_elements("Classe",execute_sql("SELECT * FROM Classe", ())), colonnes=colonnes_classe, infos= {"element" : "Classe","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classes","URL_update": "/classe/update" })
+        return render_template('liste.html', valeurs=remplacer_elements("Classe",execute_sql("SELECT * FROM Classe WHERE Nom LIKE ?",(f"%{chaine}%",))), colonnes=colonnes_classe, infos= {"element" : "des classes","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classe" }, recherche=chaine)
+    return render_template('liste.html', valeurs=remplacer_elements("Classe",execute_sql("SELECT * FROM Classe", ())), colonnes=colonnes_classe, infos= {"element" : "des classes","URL_ajout": "/classe/ajout", "ajout_boutton": "Ajouter des classes","URL_update": "/classe/update" })
 
 @app.route('/classe/update', methods=["POST","GET"])
 def update_classe():
@@ -246,25 +230,20 @@ def update_classe():
         edit_sql("UPDATE Classe SET Nom = ?, Nom_lycee = ?, Id_Professeur = ? WHERE Id = ?", ( nom,nom_lycee, id_prof, id))
         return redirect("/classe/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "classe","URL_liste": "/classe/liste"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Classe WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_classe, infos={"element": "des classes","URL_liste": "/classe/liste"})
 
 
 
 @app.route('/matiere/liste', methods=["POST","GET"])
 def liste_matiere():
     if request.method=="POST":
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere not in ['Nom', 'Nombre_Heures']:
-                return "Critère de tri invalide", 400
-            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Matiere ORDER BY {critere}", ()), colonnes=colonnes_matiere, infos={"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières", "URL_actuelle": "/matiere/liste" })
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Matiere WHERE Id=?", (str(id),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières" }, recherche=chaine)
-    return render_template('liste.html', valeurs=remplacer_elements("Matiere",execute_sql("SELECT * FROM Matiere", ())), colonnes=colonnes_matiere, infos= {"element" : "matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières","URL_update": "/matiere/update" })
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_matiere, infos= {"element" : "des matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières" }, recherche=chaine)
+    return render_template('liste.html', valeurs=remplacer_elements("Matiere",execute_sql("SELECT * FROM Matiere", ())), colonnes=colonnes_matiere, infos= {"element" : "des matières","URL_ajout": "/matiere/ajout", "ajout_boutton": "Ajouter des Matières","URL_update": "/matiere/update" })
 
 @app.route('/matiere/update', methods=["POST","GET"])
 def update_matiere():
@@ -278,7 +257,7 @@ def update_matiere():
         edit_sql("UPDATE Matiere SET Nombre_Heures = ?, Nom = ?, Id_Professeur = ? WHERE Id = ?", (nb_heures, nom, id_prof, id))
         return redirect("/matiere/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_matiere, infos={"element": "matieres","URL_liste": "/matiere/liste"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Matiere WHERE Id = ?", (str(id),))[0],dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, colonnes=colonnes_matiere, infos={"element": "des matieres","URL_liste": "/matiere/liste"})
 
 
 
@@ -288,9 +267,8 @@ def ajout_matiere():
         nom=request.form["Nom"]
         nb_heures=request.form["Nombre_Heures"]
         id_prof=request.form["Professeur_valeur"]
-        print(nom, nb_heures, execute_sql("SELECT * FROM Matiere", ()))
         edit_sql("INSERT INTO Matiere (Nom, Nombre_Heures, Id_Professeur) VALUES (?,?,?)",(nom, nb_heures, id_prof))
-    return render_template('ajout.html', colonnes=colonnes_matiere, dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, infos= {"element" : "matière","URL_liste": "/matiere/liste", "titre": "Ajouter des matières", })
+    return render_template('ajout.html', colonnes=colonnes_matiere, dropdown_values={"Professeur" :execute_sql("SELECT * FROM Professeur")}, infos= {"element" : "des matières","URL_liste": "/matiere/liste", "titre": "Ajouter des matières", })
 
 
 
@@ -302,13 +280,8 @@ def ajout_matiere():
 
 @app.route('/inscription/liste', methods=["POST","GET"])
 def liste_inscription():
-    _infos={"element" : "inscriptions","URL_ajout": "/inscription/ajout", "ajout_boutton": "Ajouter des Inscriptions","URL_update": "/inscription/update" }
+    _infos={"element" : "des inscriptions","URL_ajout": "/inscription/ajout", "ajout_boutton": "Ajouter des Inscriptions","URL_update": "/inscription/update" }
     if request.method=="POST":
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere not in ['Id_Eleve', 'Id_Professeur']:
-                return "Critère de tri invalide", 400
-            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Inscription ORDER BY {critere}", ()), colonnes=colonnes_inscription, infos=_infos)
         if request.form.get("type")=="supprimer":
             id=request.form["id"]
             edit_sql("DELETE FROM Inscription WHERE Id=?", (str(id),))
@@ -328,7 +301,7 @@ def update_inscription():
         edit_sql("UPDATE Inscription SET Id_Eleve = ?, Id_Matiere = ? WHERE Id = ?", (id_eleve, id_matiere, id))
         return redirect("/inscription/liste")
     
-    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Inscription WHERE Id = ?", (str(id),))[0],dropdown_values={"Id_Eleve" :execute_sql("SELECT * FROM Eleve"),"Id_Matiere" :execute_sql("SELECT * FROM Matiere")}, colonnes=colonnes_inscription, infos={"element": "inscriptions","URL_liste": "/inscription/liste"})
+    return render_template('update.html', valeurs=execute_sql("SELECT * FROM Inscription WHERE Id = ?", (str(id),))[0],dropdown_values={"Id_Eleve" :execute_sql("SELECT * FROM Eleve"),"Id_Matiere" :execute_sql("SELECT * FROM Matiere")}, colonnes=colonnes_inscription, infos={"element": "des inscriptions","URL_liste": "/inscription/liste"})
 
 
 
@@ -338,11 +311,12 @@ def ajout_inscription():
         id_eleve=request.form["Id_Eleve_valeur"]
         id_matiere=request.form["Id_Matiere_valeur"]
         edit_sql("INSERT INTO Inscription (Id_Eleve, Id_Matiere) VALUES (?,?)",(id_eleve, id_matiere))
-    return render_template('ajout.html', colonnes=colonnes_inscription, dropdown_values={"Id_Eleve" :execute_sql("SELECT * FROM Eleve"),"Id_Matiere" :execute_sql("SELECT * FROM Matiere")}, infos= {"element" : "inscriptions","URL_liste": "/inscription/liste", "titre": "Ajouter des inscription", })
+    return render_template('ajout.html', colonnes=colonnes_inscription, dropdown_values={"Id_Eleve" :execute_sql("SELECT * FROM Eleve"),"Id_Matiere" :execute_sql("SELECT * FROM Matiere")}, infos= {"element" : "des inscriptions","URL_liste": "/inscription/liste", "titre": "Ajouter des inscription", })
 
 @app.route('/eleve/classe', methods=["POST","GET"])
 def efficher_eleve_classe():
-    _infos={"element" : "afficher","URL_ajout": "/eleve/ajout", "ajout_boutton": "Ajouter des eleve","URL_update": "/eleve/update" }
+    id=request.args.get("id")
+    _infos={"element" : "des élèves","URL_ajout": "/eleve/ajout", "ajout_boutton": "Ajouter des eleve","URL_update": "/eleve/update" }
     colonnes=[]
     for i in range(len(colonnes_eleve)): 
         colonnes.append(colonnes_eleve[i].copy())
@@ -350,18 +324,13 @@ def efficher_eleve_classe():
     colonnes.pop(3)
     colonnes=tuple(colonnes)
     if request.method=="POST":
-        if request.form.get("type")=="tri":
-            critere=request.form.get("tri")
-            if critere not in ['Id_Eleve', 'Id_Professeur']:
-                return "Critère de tri invalide", 400
-            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Classe WHERE  ORDER BY {critere}", ()), colonnes=colonnes_inscription, infos=_infos)
         if request.form.get("type")=="supprimer":
-            id=request.form["id"]
-            edit_sql("DELETE FROM Inscription WHERE Id=?", (str(id),))
+            id_suppr=request.form["id"]
+            edit_sql("DELETE FROM Inscription WHERE Id=?", (str(id_suppr),))
     if request.args.get("type")=="recherche":
         chaine=request.args.get("recherche")
-        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Inscription WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_inscription, infos= _infos, recherche=chaine)
-    return render_template('liste.html', valeurs=execute_sql("SELECT Id,Prenom,Nom,Date_de_Naissance FROM Eleve WHERE Id_Classe=?", ("4")), colonnes=colonnes_eleve, infos= _infos)
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Eleve WHERE Nom LIKE ? AND Id_Classe=?",(f"%{chaine}%",str(id),)), colonnes=colonnes, infos= _infos, recherche=chaine)
+    return render_template('liste.html', valeurs=remplacer_elements("Eleve",execute_sql("SELECT * FROM Eleve WHERE Id_Classe=?", (str(id),))), colonnes=colonnes, infos= _infos)
 
 
 if __name__=="__main__":
