@@ -340,6 +340,29 @@ def ajout_inscription():
         edit_sql("INSERT INTO Inscription (Id_Eleve, Id_Matiere) VALUES (?,?)",(id_eleve, id_matiere))
     return render_template('ajout.html', colonnes=colonnes_inscription, dropdown_values={"Id_Eleve" :execute_sql("SELECT * FROM Eleve"),"Id_Matiere" :execute_sql("SELECT * FROM Matiere")}, infos= {"element" : "inscriptions","URL_liste": "/inscription/liste", "titre": "Ajouter des inscription", })
 
+@app.route('/eleve/classe', methods=["POST","GET"])
+def efficher_eleve_classe():
+    _infos={"element" : "afficher","URL_ajout": "/eleve/ajout", "ajout_boutton": "Ajouter des eleve","URL_update": "/eleve/update" }
+    colonnes=[]
+    for i in range(len(colonnes_eleve)): 
+        colonnes.append(colonnes_eleve[i].copy())
+    colonnes[2]["titre"]="Age"
+    colonnes.pop(3)
+    colonnes=tuple(colonnes)
+    if request.method=="POST":
+        if request.form.get("type")=="tri":
+            critere=request.form.get("tri")
+            if critere not in ['Id_Eleve', 'Id_Professeur']:
+                return "Critère de tri invalide", 400
+            return render_template('liste.html', valeurs=execute_sql(f"SELECT * FROM Classe WHERE  ORDER BY {critere}", ()), colonnes=colonnes_inscription, infos=_infos)
+        if request.form.get("type")=="supprimer":
+            id=request.form["id"]
+            edit_sql("DELETE FROM Inscription WHERE Id=?", (str(id),))
+    if request.args.get("type")=="recherche":
+        chaine=request.args.get("recherche")
+        return render_template('liste.html', valeurs=execute_sql("SELECT * FROM Inscription WHERE Nom LIKE ?",(f"%{chaine}%",)), colonnes=colonnes_inscription, infos= _infos, recherche=chaine)
+    return render_template('liste.html', valeurs=execute_sql("SELECT Id,Prenom,Nom,Date_de_Naissance FROM Eleve WHERE Id_Classe=?", ("4")), colonnes=colonnes_eleve, infos= _infos)
+
 
 if __name__=="__main__":
     app.run(host="0.0.0.0", port=5000)
