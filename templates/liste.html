@@ -40,6 +40,9 @@
                     <input type="hidden" name="id" value="{{ v[0] }}">
                     <input type="hidden" name="type" value="supprimer">
                     <button type="submit">🗑️ Supprimer</button>
+                    {% if infos["element"] == "des classes" %}
+                    <a href="/eleve/classe?id={{ v[0] }}">👁️ Voir la classes</a>
+                    {% endif %}
                 </form>
             </td>
         </tr>
